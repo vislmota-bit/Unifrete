@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>freteLXP — Plataforma de Aprendizagem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy:    #0D1B36;
+    --brand:   #00AEEF;
+    --brand-d: #0084C1;
+    --brand-l: #E6F7FE;
+    --success: #12B76A;
+    --succ-l:  #ECFDF3;
+    --warn:    #F79009;
+    --warn-l:  #FFFAEB;
+    --danger:  #F04438;
+    --dang-l:  #FEF3F2;
+    --g50:     #F7F8FA;
+    --g100:    #EAECF0;
+    --g200:    #D0D5DD;
+    --g400:    #98A2B3;
+    --g600:    #475467;
+    --g800:    #1D2939;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--g50); color: var(--g800); }
+  h1,h2,h3,h4,h5 { font-family: 'Space Grotesk', sans-serif; }
+
+  /* ── Layout ── */
+  .app   { display: flex; height: 100vh; overflow: hidden; }
+  .sidebar {
+    width: 192px; background: #fff; border-right: 1px solid var(--g100);
+    display: flex; flex-direction: column; flex-shrink: 0;
+  }
+  .main  { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar {
+    height: 56px; background: #fff; border-bottom: 1px solid var(--g100);
+    display: flex; align-items: center; justify-content: flex-end;
+    padding: 0 24px; gap: 12px; flex-shrink: 0;
+  }
+  .content { flex: 1; overflow-y: auto; padding: 24px; }
+
+  /* ── Sidebar ── */
+  .sb-logo {
+    height: 56px; display: flex; align-items: center; gap: 8px;
+    padding: 0 16px; border-bottom: 1px solid var(--g100);
+  }
+  .sb-logo-icon {
+    width: 28px; height: 28px; background: var(--navy); border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-family: 'Space Grotesk',sans-serif; font-weight: 700; font-size: 11px;
+  }
+  .sb-logo-text { font-family: 'Space Grotesk',sans-serif; font-weight: 700; color: var(--navy); font-size: 14px; }
+  .sb-nav { flex: 1; overflow-y: auto; padding: 12px 8px; }
+  .sb-group-label {
+    font-size: 10px; font-weight: 500; color: var(--g400);
+    text-transform: uppercase; letter-spacing: .08em;
+    padding: 0 8px; margin-bottom: 4px; margin-top: 8px;
+  }
+  .sb-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 6px; cursor: pointer;
+    font-size: 13px; color: var(--g600); transition: all .15s;
+    border: none; background: none; width: 100%; text-align: left;
+  }
+  .sb-item:hover { background: var(--g50); color: var(--g800); }
+  .sb-item.active { background: var(--brand-l); color: var(--brand-d); font-weight: 500; }
+  .sb-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .sb-badge {
+    margin-left: auto; width: 16px; height: 16px; border-radius: 50%;
+    background: var(--danger); color: #fff; font-size: 10px;
+    display: flex; align-items: center; justify-content: center; font-weight: 700;
+  }
+  .sb-footer {
+    padding: 12px; border-top: 1px solid var(--g100);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .avatar {
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 500; flex-shrink: 0; overflow: hidden;
+  }
+  .av-sm  { width: 28px; height: 28px; font-size: 11px; }
+  .av-md  { width: 36px; height: 36px; font-size: 13px; }
+  .av-lg  { width: 44px; height: 44px; font-size: 16px; }
+  .av-navy    { background: var(--navy);    color: #fff; }
+  .av-brand   { background: var(--brand);   color: #fff; }
+  .av-success { background: var(--success); color: #fff; }
+
+  /* ── Topbar ── */
+  .bell-btn {
+    position: relative; padding: 6px; border-radius: 6px; border: none;
+    background: none; cursor: pointer; color: var(--g400);
+  }
+  .bell-btn:hover { background: var(--g50); color: var(--g600); }
+  .bell-dot {
+    position: absolute; top: 6px; right: 6px; width: 7px; height: 7px;
+    border-radius: 50%; background: var(--danger);
+  }
+
+  /* ── Páginas ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── Card ── */
+  .card {
+    background: #fff; border: 1px solid var(--g100); border-radius: 12px;
+    padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .card-navy { background: var(--navy); border-color: transparent; }
+
+  /* ── Botões ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: none; border-radius: 8px; cursor: pointer;
+    font-family: 'DM Sans',sans-serif; font-weight: 500; transition: all .15s;
+  }
+  .btn-sm  { font-size: 12px; padding: 6px 12px; }
+  .btn-md  { font-size: 13px; padding: 8px 16px; }
+  .btn-lg  { font-size: 14px; padding: 10px 20px; }
+  .btn-primary { background: var(--navy);    color: #fff; border: 1px solid transparent; }
+  .btn-primary:hover { opacity: .9; }
+  .btn-brand   { background: var(--brand);   color: #fff; border: 1px solid transparent; }
+  .btn-brand:hover   { background: var(--brand-d); }
+  .btn-outline { background: #fff; color: var(--navy); border: 1px solid var(--g200); }
+  .btn-outline:hover { background: var(--g50); }
+  .btn-ghost   { background: transparent; color: var(--g600); border: 1px solid transparent; }
+  .btn-ghost:hover   { background: var(--g50); }
+  .btn-danger  { background: var(--danger);  color: #fff; border: 1px solid transparent; }
+  .btn-full { width: 100%; justify-content: center; }
+
+  /* ── Badge ── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 500;
+  }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .badge-blue    { background: var(--brand-l); color: var(--brand-d); }
+  .badge-navy    { background: var(--navy);    color: #fff; }
+  .badge-success { background: var(--succ-l);  color: var(--success); }
+  .badge-warning { background: var(--warn-l);  color: var(--warn); }
+  .badge-danger  { background: var(--dang-l);  color: var(--danger); }
+  .badge-gray    { background: var(--g100);    color: var(--g600); }
+
+  /* ── Progress bar ── */
+  .progress-track { border-radius: 99px; overflow: hidden; }
+  .progress-h1  { height: 4px;  }
+  .progress-h15 { height: 6px;  }
+  .progress-h2  { height: 8px;  }
+  .progress-fill { height: 100%; border-radius: 99px; transition: width .5s; }
+  .fill-blue   { background: var(--brand); }
+  .fill-green  { background: var(--success); }
+  .fill-yellow { background: var(--warn); }
+  .fill-red    { background: var(--danger); }
+  .fill-white  { background: #fff; }
+  .track-blue  { background: var(--brand-l); }
+  .track-green { background: var(--succ-l);  }
+  .track-white { background: rgba(255,255,255,.2); }
+  .track-gray  { background: var(--g100); }
+
+  /* ── Input ── */
+  .input-wrap { display: flex; flex-direction: column; gap: 4px; }
+  .input-label { font-size: 13px; font-weight: 500; color: var(--g800); }
+  .input-rel { position: relative; }
+  .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--g400); }
+  input[type=text], input[type=email], input[type=password] {
+    width: 100%; padding: 9px 12px; border: 1px solid var(--g200); border-radius: 8px;
+    font-family: 'DM Sans',sans-serif; font-size: 13px; outline: none; transition: all .15s;
+  }
+  input[type=text]:focus, input[type=email]:focus, input[type=password]:focus {
+    border-color: var(--brand); box-shadow: 0 0 0 2px rgba(0,174,239,.15);
+  }
+  .has-icon input { padding-left: 36px; }
+  .input-error { font-size: 11px; color: var(--danger); }
+
+  /* ── Utilitários ── */
+  .flex    { display: flex; }
+  .col     { flex-direction: column; }
+  .items-c { align-items: center; }
+  .items-s { align-items: flex-start; }
+  .justify-b { justify-content: space-between; }
+  .gap1 { gap: 4px; }  .gap2 { gap: 8px; }  .gap3 { gap: 12px; }
+  .gap4 { gap: 16px; } .gap5 { gap: 20px; } .gap6 { gap: 24px; }
+  .flex-1 { flex: 1; }
+  .mt1 { margin-top: 4px; }  .mt2 { margin-top: 8px; }
+  .mt3 { margin-top: 12px; } .mt4 { margin-top: 16px; }
+  .mt5 { margin-top: 20px; } .mt6 { margin-top: 24px; }
+  .mb2 { margin-bottom: 8px; } .mb3 { margin-bottom: 12px; } .mb4 { margin-bottom: 16px; }
+  .p3 { padding: 12px; } .p4 { padding: 16px; } .p5 { padding: 20px; } .p6 { padding: 24px; }
+  .px4 { padding-left: 16px; padding-right: 16px; }
+  .text-xs  { font-size: 11px; } .text-sm { font-size: 13px; }
+  .text-base { font-size: 14px; } .text-lg { font-size: 16px; }
+  .text-xl  { font-size: 20px; } .text-2xl { font-size: 24px; } .text-3xl { font-size: 28px; }
+  .font-bold { font-weight: 700; } .font-semi { font-weight: 600; } .font-med { font-weight: 500; }
+  .text-white  { color: #fff; }     .text-navy   { color: var(--navy); }
+  .text-brand  { color: var(--brand); } .text-brand-d { color: var(--brand-d); }
+  .text-g400   { color: var(--g400); }  .text-g600   { color: var(--g600); }
+  .text-g800   { color: var(--g800); }
+  .text-success{ color: var(--success); } .text-warn { color: var(--warn); }
+  .text-danger { color: var(--danger); }
+  .text-right { text-align: right; } .text-center { text-align: center; }
+  .rounded-full { border-radius: 50%; } .rounded-lg { border-radius: 12px; }
+  .rounded-md { border-radius: 8px; } .rounded-sm { border-radius: 4px; }
+  .w-full { width: 100%; } .min-w-0 { min-width: 0; }
+  .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lh-tight { line-height: 1.3; }
+  .opacity-40 { opacity: .4; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+  .section-title { font-size: 15px; font-weight: 700; color: var(--g800); margin-bottom: 12px; font-family: 'Space Grotesk',sans-serif; }
+  .max-w { max-width: 760px; margin: 0 auto; }
+  .space-y > * + * { margin-top: 12px; }
+  .space-y6 > * + * { margin-top: 24px; }
+  .divider { height: 1px; background: var(--g100); margin: 12px 0; }
+  .icon-box {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+
+  /* ── LOGIN ── */
+  .login-wrap { display: flex; min-height: 100vh; }
+  .login-left {
+    width: 288px; background: var(--navy); padding: 40px 32px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .login-right {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    background: var(--g50); padding: 40px 24px;
+  }
+  .login-form { width: 100%; max-width: 360px; }
+  .stat-row { display: flex; align-items: center; gap: 12px; }
+  .stat-icon {
+    width: 32px; height: 32px; border-radius: 6px; background: rgba(255,255,255,.1);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .sso-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 10px; border: 1px solid var(--g200); border-radius: 8px;
+    background: #fff; cursor: pointer; font-family: 'DM Sans',sans-serif;
+    font-size: 13px; font-weight: 500; color: var(--g800); transition: all .15s;
+  }
+  .sso-btn:hover { background: var(--g50); }
+  .divider-or {
+    display: flex; align-items: center; gap: 12px; margin: 16px 0;
+  }
+  .divider-or-line { flex: 1; height: 1px; background: var(--g100); }
+
+  /* ── CURSOS ── */
+  .tabs {
+    display: flex; gap: 2px; background: var(--g100);
+    padding: 4px; border-radius: 8px; width: fit-content; margin-bottom: 16px;
+  }
+  .tab {
+    padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 500;
+    cursor: pointer; border: none; background: none; color: var(--g400); transition: all .15s;
+  }
+  .tab.active { background: #fff; color: var(--g800); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .course-item {
+    display: flex; align-items: center; gap: 12px; padding: 12px;
+    border-radius: 8px; border: 1px solid var(--g100); background: #fff; transition: all .15s;
+  }
+  .course-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .course-item.late   { background: var(--dang-l); border-color: rgba(240,68,56,.2); }
+  .course-item.soon   { background: var(--warn-l); border-color: rgba(247,144,9,.2); }
+  .thumb {
+    width: 56px; height: 56px; border-radius: 8px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,.6); font-size: 20px;
+  }
+
+  /* ── GAMIFICAÇÃO ── */
+  .streak-day {
+    flex: 1; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; transition: all .15s;
+  }
+  .streak-day.done  { background: var(--warn); color: #fff; font-weight: 500; }
+  .streak-day.empty { background: #fff; border: 1px solid var(--g100); color: var(--g200); }
+  .achievement-card {
+    display: flex; align-items: flex-start; gap: 10px; padding: 12px;
+    border: 1px solid var(--g100); border-radius: 10px; background: #fff; transition: all .15s;
+  }
+  .achievement-card.locked { opacity: .4; filter: grayscale(1); }
+  .lb-row {
+    display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+    border-bottom: 1px solid var(--g50); transition: all .15s;
+  }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-row.me { background: var(--brand-l); }
+  .lb-row:hover { background: var(--g50); }
+
+  /* ── TREINAMENTOS ── */
+  .training-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px;
+    border-radius: 8px; border: 1px solid var(--g100); background: #fff; transition: all .15s;
+  }
+  .training-item.late { background: var(--dang-l); border-color: rgba(240,68,56,.2); }
+  .training-item.soon { background: var(--warn-l); border-color: rgba(247,144,9,.2); }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── TRILHAS ── */
+  .module-line { display: flex; gap: 16px; }
+  .module-timeline { display: flex; flex-direction: column; align-items: center; }
+  .module-circle {
+    width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; border: 2px solid; flex-shrink: 0; font-size: 14px;
+  }
+  .mc-done   { background: var(--success); border-color: var(--success); color: #fff; }
+  .mc-active { background: var(--brand);   border-color: var(--brand);   color: #fff; }
+  .mc-locked { background: #fff;           border-color: var(--g200);    color: var(--g400); }
+  .vline { width: 2px; flex: 1; min-height: 20px; margin: 4px 0; }
+  .vl-done   { background: var(--success); }
+  .vl-gray   { background: var(--g100); }
+  .trail-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* ── ADMIN ── */
+  .admin-topbar {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;
+  }
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 160px; }
+  .bar-group { flex: 1; display: flex; gap: 2px; align-items: flex-end; }
+  .bar {
+    flex: 1; border-radius: 4px 4px 0 0; transition: opacity .15s;
+    min-width: 0;
+  }
+  .bar:hover { opacity: .8; }
+  .bar-label { font-size: 10px; color: var(--g400); text-align: center; margin-top: 4px; }
+  .donut-legend { display: flex; flex-direction: column; gap: 8px; }
+  .legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .alert-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px;
+    border: 1px solid var(--g100); border-radius: 8px; background: #fff; transition: all .15s;
+  }
+  .alert-item:hover { background: var(--g50); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-size: 11px; font-weight: 500; color: var(--g400); padding-bottom: 8px; border-bottom: 1px solid var(--g100); }
+  td { padding: 10px 0; border-bottom: 1px solid var(--g50); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--g50); }
+
+  /* LOGIN show/hide */
+  #login-screen { display: flex; min-height: 100vh; }
+  #main-app { display: none; height: 100vh; }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .grid4 { grid-template-columns: 1fr 1fr; }
+    .grid3 { grid-template-columns: 1fr 1fr; }
+    .sidebar { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     TELA DE LOGIN
+════════════════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-left">
+    <!-- Logo -->
+    <div class="flex items-c gap2">
+      <div style="width:36px;height:36px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+        <span style="color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;">FL</span>
+      </div>
+      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:18px;">freteLXP</span>
+    </div>
+
+    <!-- Frase -->
+    <div>
+      <h1 style="color:#fff;font-size:26px;font-weight:700;line-height:1.3;margin-bottom:10px;">
+        Aprenda no seu ritmo,<br/>cresça no seu caminho.
+      </h1>
+      <p style="color:rgba(255,255,255,.5);font-size:13px;line-height:1.6;">
+        A plataforma de aprendizagem corporativa da Fretebras.
+      </p>
+    </div>
+
+    <!-- Stats -->
+    <div class="flex col gap3">
+      <div class="stat-row">
+        <div class="stat-icon">
+          <svg width="16" height="16" fill="none" stroke="var(--brand)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div>
+          <p style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:15px;line-height:1;">12k+</p>
+          <p style="color:rgba(255,255,255,.4);font-size:11px;margin-top:2px;">colaboradores</p>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-icon">
+          <svg width="16" height="16" fill="none" stroke="var(--brand)" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <div>
+          <p style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:15px;line-height:1;">340</p>
+          <p style="color:rgba(255,255,255,.4);font-size:11px;margin-top:2px;">cursos disponíveis</p>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-icon">
+          <svg width="16" height="16" fill="none" stroke="var(--brand)" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div>
+          <p style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:15px;line-height:1;">94%</p>
+          <p style="color:rgba(255,255,255,.4);font-size:11px;margin-top:2px;">taxa de satisfação</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="login-right">
+    <div class="login-form">
+      <h2 style="font-size:22px;font-weight:700;color:var(--g800);margin-bottom:4px;">Bem-vindo de volta</h2>
+      <p style="font-size:13px;color:var(--g400);margin-bottom:24px;">
+        Entre com sua conta <strong style="color:var(--brand);">@fretebras.com.br</strong>
+      </p>
+
+      <div id="login-error" style="display:none;background:var(--dang-l);border:1px solid rgba(240,68,56,.2);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--danger);margin-bottom:16px;"></div>
+
+      <div class="flex col gap4">
+        <div class="input-wrap">
+          <label class="input-label">E-mail corporativo</label>
+          <div class="input-rel has-icon">
+            <span class="input-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </span>
+            <input type="email" id="login-email" placeholder="nome@fretebras.com.br" />
+          </div>
+        </div>
+
+        <div class="input-wrap">
+          <label class="input-label">Senha</label>
+          <div class="input-rel has-icon">
+            <span class="input-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </span>
+            <input type="password" id="login-password" placeholder="••••••••" />
+          </div>
+        </div>
+
+        <div class="flex items-c justify-b">
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--g600);cursor:pointer;">
+            <input type="checkbox" style="accent-color:var(--brand);width:14px;height:14px;" />
+            Lembrar acesso
+          </label>
+          <button style="background:none;border:none;font-size:12px;color:var(--brand);cursor:pointer;font-family:'DM Sans',sans-serif;">
+            Esqueceu a senha?
+          </button>
+        </div>
+
+        <button class="btn btn-primary btn-lg btn-full" onclick="doLogin()">Entrar</button>
+      </div>
+
+      <div class="divider-or">
+        <div class="divider-or-line"></div>
+        <span style="font-size:11px;color:var(--g400);">ou</span>
+        <div class="divider-or-line"></div>
+      </div>
+
+      <button class="sso-btn" onclick="doLogin()">
+        <svg viewBox="0 0 21 21" width="16" height="16"><rect x="1" y="1" width="9" height="9" fill="#F25022"/><rect x="11" y="1" width="9" height="9" fill="#7FBA00"/><rect x="1" y="11" width="9" height="9" fill="#00A4EF"/><rect x="11" y="11" width="9" height="9" fill="#FFB900"/></svg>
+        Entrar com Microsoft SSO
+      </button>
+
+      <p style="text-align:center;font-size:11px;color:var(--g400);margin-top:16px;">
+        Acesso exclusivo para colaboradores Fretebras.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN APP (pós-login)
+════════════════════════════════════════════════════════ -->
+<div id="main-app" class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-icon">FL</div>
+      <span class="sb-logo-text">freteLXP</span>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-group-label">Aprendizagem</div>
+      <button class="sb-item active" onclick="showPage('courses',this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Cursos
+      </button>
+      <button class="sb-item" onclick="showPage('trails',this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 3h7v7H3z"/><path d="M14 3h7v7h-7z"/><path d="M14 14h7v7h-7z"/><path d="M3 14h7v7H3z"/></svg>
+        Trilhas
+      </button>
+      <button class="sb-item" onclick="showPage('trainings',this)" style="position:relative;">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Treinamentos
+        <span class="sb-badge">3</span>
+      </button>
+      <button class="sb-item" onclick="showPage('gamification',this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+        Gamificação
+      </button>
+      <div class="sb-group-label" style="margin-top:12px;">Gestão</div>
+      <button class="sb-item" onclick="showPage('admin',this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard Admin
+      </button>
+    </nav>
+    <div class="sb-footer">
+      <div class="avatar av-sm av-navy">PJ</div>
+      <div class="min-w-0">
+        <p class="text-xs font-med text-g800 truncate">Pedro Jota</p>
+        <p style="font-size:10px;color:var(--g400);">Operações</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <button class="bell-btn" aria-label="Notificações">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="bell-dot"></span>
+      </button>
+      <div class="avatar av-sm av-navy">PJ</div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══════════ CURSOS ══════════ -->
+      <div id="page-courses" class="page active max-w">
+        <!-- XP Card -->
+        <div class="card card-navy p6 mb4">
+          <div class="flex items-c justify-b mb4">
+            <div class="flex items-c gap3">
+              <div class="avatar av-lg av-brand">PJ</div>
+              <div>
+                <p class="text-lg font-bold text-white">Pedro Jota</p>
+                <p class="text-xs" style="color:rgba(255,255,255,.5);">Operações · Motorista</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-xs" style="color:rgba(255,255,255,.5);margin-bottom:2px;">Ranking</p>
+              <p class="text-3xl font-bold text-white">#14</p>
+            </div>
+          </div>
+          <div class="flex justify-b text-sm mb1" style="color:rgba(255,255,255,.6);">
+            <span>Nível 7 → Nível 8</span>
+            <span style="color:#fff;font-weight:500;">3.240 / 4.000 XP</span>
+          </div>
+          <div class="progress-track progress-h2 track-white">
+            <div class="progress-fill fill-brand" style="width:81%;background:var(--brand);"></div>
+          </div>
+          <p class="text-xs mt1" style="color:rgba(255,255,255,.35);text-align:right;">Faltam 760 XP para o próximo nível</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="tab active" onclick="filterCourses('all',this)">Todos</button>
+          <button class="tab" onclick="filterCourses('progress',this)">Em andamento</button>
+          <button class="tab" onclick="filterCourses('done',this)">Concluídos</button>
+          <button class="tab" onclick="filterCourses('new',this)">Não iniciados</button>
+        </div>
+
+        <!-- Lista de cursos -->
+        <div class="space-y" id="courses-list">
+          <!-- item late -->
+          <div class="course-item late" data-status="progress">
+            <div class="thumb" style="background:#0D1B36;">🚗</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-c gap2 mb1">
+                <span class="text-sm font-med">Direção Defensiva Avançada</span>
+                <span class="badge badge-danger"><span class="badge-dot" style="background:var(--danger);"></span>Obrigatório</span>
+                <span class="badge badge-danger">Atrasado</span>
+              </div>
+              <div class="flex items-c gap3 text-xs text-g400 mb2">
+                <span>⏱ 120 min</span><span>📚 8 módulos</span>
+                <span class="badge badge-blue">Segurança</span>
+                <span style="color:var(--danger);font-weight:500;">Prazo: 15/07/2025</span>
+              </div>
+              <div class="progress-track progress-h15 track-blue">
+                <div class="progress-fill fill-blue" style="width:75%;"></div>
+              </div>
+            </div>
+            <button class="btn btn-brand btn-sm">▶ Continuar</button>
+          </div>
+
+          <!-- item in progress -->
+          <div class="course-item" data-status="progress">
+            <div class="thumb" style="background:#0084C1;">📋</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-c gap2 mb1">
+                <span class="text-sm font-med">Regulamentação ANTT 2025</span>
+                <span class="badge badge-danger"><span class="badge-dot" style="background:var(--danger);"></span>Obrigatório</span>
+              </div>
+              <div class="flex items-c gap3 text-xs text-g400 mb2">
+                <span>⏱ 90 min</span><span>📚 6 módulos</span>
+                <span class="badge badge-blue">Compliance</span>
+                <span>Prazo: 30/06/2025</span>
+              </div>
+              <div class="progress-track progress-h15 track-blue">
+                <div class="progress-fill fill-blue" style="width:50%;"></div>
+              </div>
+            </div>
+            <button class="btn btn-brand btn-sm">▶ Continuar</button>
+          </div>
+
+          <!-- item not started -->
+          <div class="course-item" data-status="new">
+            <div class="thumb" style="background:#F79009;">💬</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-c gap2 mb1">
+                <span class="text-sm font-med">Atendimento ao Cliente na Logística</span>
+                <span class="badge badge-gray"><span class="badge-dot" style="background:var(--g400);"></span>Opcional</span>
+              </div>
+              <div class="flex items-c gap3 text-xs text-g400">
+                <span>⏱ 60 min</span><span>📚 4 módulos</span>
+                <span class="badge badge-blue">Soft Skills</span>
+              </div>
+            </div>
+            <button class="btn btn-outline btn-sm">▶ Iniciar</button>
+          </div>
+
+          <!-- item not started -->
+          <div class="course-item" data-status="new">
+            <div class="thumb" style="background:#475467;">📊</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-c gap2 mb1">
+                <span class="text-sm font-med">Excel Básico para Gestão de Rotas</span>
+                <span class="badge badge-gray"><span class="badge-dot" style="background:var(--g400);"></span>Opcional</span>
+              </div>
+              <div class="flex items-c gap3 text-xs text-g400">
+                <span>⏱ 150 min</span><span>📚 10 módulos</span>
+                <span class="badge badge-blue">Tecnologia</span>
+              </div>
+            </div>
+            <button class="btn btn-outline btn-sm">▶ Iniciar</button>
+          </div>
+        </div>
+
+        <!-- Concluídos -->
+        <div class="mt6">
+          <div class="flex items-c gap2 mb3">
+            <svg width="16" height="16" fill="none" stroke="var(--success)" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            <span class="text-sm font-semi" style="color:var(--g800);">Concluídos (3)</span>
+          </div>
+          <div class="space-y" id="done-list">
+            <div class="course-item" data-status="done">
+              <div class="thumb" style="background:#00AEEF;">💻</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-c gap2 mb1">
+                  <span class="text-sm font-med">Uso da Plataforma Fretebras</span>
+                  <span class="badge badge-success"><span class="badge-dot" style="background:var(--success);"></span>Concluído</span>
+                </div>
+                <div class="flex items-c gap3 text-xs text-g400">
+                  <span>⏱ 45 min</span><span class="badge badge-blue">Tecnologia</span>
+                </div>
+              </div>
+              <button class="btn btn-ghost btn-sm">↺ Rever</button>
+            </div>
+            <div class="course-item" data-status="done">
+              <div class="thumb" style="background:#12B76A;">❤️</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-c gap2 mb1">
+                  <span class="text-sm font-med">Saúde e Bem-estar na Estrada</span>
+                  <span class="badge badge-success"><span class="badge-dot" style="background:var(--success);"></span>Concluído</span>
+                </div>
+                <div class="flex items-c gap3 text-xs text-g400">
+                  <span>⏱ 40 min</span><span class="badge badge-blue">Saúde</span>
+                </div>
+              </div>
+              <button class="btn btn-ghost btn-sm">↺ Rever</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ GAMIFICAÇÃO ══════════ -->
+      <div id="page-gamification" class="page max-w">
+        <!-- Banner nível -->
+        <div class="card card-navy p6 mb4">
+          <div class="flex items-c gap5">
+            <div style="position:relative;flex-shrink:0;">
+              <div style="width:80px;height:80px;border-radius:50%;border:4px solid var(--brand);background:rgba(0,174,239,.15);display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:32px;">7</span>
+              </div>
+              <div style="position:absolute;bottom:-2px;right:-2px;width:24px;height:24px;border-radius:50%;background:var(--warn);display:flex;align-items:center;justify-content:center;font-size:12px;">⭐</div>
+            </div>
+            <div class="flex-1">
+              <p class="text-xs text-g400 mb1" style="color:rgba(255,255,255,.4);">Nível atual</p>
+              <p class="text-xl font-bold text-white mb2">Referência</p>
+              <div class="flex justify-b text-xs mb1" style="color:rgba(255,255,255,.5);">
+                <span>3.240 XP</span><span>4.000 XP</span>
+              </div>
+              <div class="progress-track progress-h2 track-white">
+                <div class="progress-fill" style="width:81%;background:var(--brand);"></div>
+              </div>
+              <p class="text-xs mt1" style="color:rgba(255,255,255,.3);text-align:right;">Faltam 760 XP</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Métricas -->
+        <div class="grid3 mb4">
+          <div class="card text-center p4">
+            <div class="icon-box" style="background:var(--brand-l);margin:0 auto 8px;"><svg width="18" height="18" fill="none" stroke="var(--brand)" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <p class="text-3xl font-bold text-g800">3</p>
+            <p class="text-xs text-g400 mt1">Cursos concluídos</p>
+          </div>
+          <div class="card text-center p4">
+            <div class="icon-box" style="background:var(--warn-l);margin:0 auto 8px;"><svg width="18" height="18" fill="none" stroke="var(--warn)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+            <p class="text-3xl font-bold text-g800">3</p>
+            <p class="text-xs text-g400 mt1">Conquistas</p>
+          </div>
+          <div class="card text-center p4">
+            <div class="icon-box" style="background:var(--succ-l);margin:0 auto 8px;"><svg width="18" height="18" fill="none" stroke="var(--success)" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+            <p class="text-3xl font-bold text-g800">#14</p>
+            <p class="text-xs text-g400 mt1">Posição ranking</p>
+          </div>
+        </div>
+
+        <!-- Streak -->
+        <div class="card mb4" style="background:var(--warn-l);border-color:rgba(247,144,9,.2);padding:16px;">
+          <div class="flex items-c gap3 mb3">
+            <span style="font-size:24px;">🔥</span>
+            <div class="flex-1">
+              <p class="text-sm font-semi text-g800">Streak semanal</p>
+              <p class="text-xs text-g600">12 dias consecutivos de aprendizagem</p>
+            </div>
+            <span class="badge badge-warning">12 dias</span>
+          </div>
+          <div class="flex gap2">
+            <div><div class="streak-day done">✓</div><p class="bar-label">Seg</p></div>
+            <div><div class="streak-day done">✓</div><p class="bar-label">Ter</p></div>
+            <div><div class="streak-day done">✓</div><p class="bar-label">Qua</p></div>
+            <div><div class="streak-day done">✓</div><p class="bar-label">Qui</p></div>
+            <div><div class="streak-day done">✓</div><p class="bar-label">Sex</p></div>
+            <div><div class="streak-day empty"></div><p class="bar-label">Sáb</p></div>
+            <div><div class="streak-day empty"></div><p class="bar-label">Dom</p></div>
+          </div>
+        </div>
+
+        <!-- Conquistas -->
+        <p class="section-title">Conquistas</p>
+        <div class="grid3 mb4">
+          <div class="achievement-card"><span style="font-size:28px;">🚀</span><div><p class="text-sm font-med text-g800">Primeira Milha</p><p class="text-xs text-g400 mt1">Completou seu primeiro módulo.</p><span class="badge badge-success mt2">+50 XP</span></div></div>
+          <div class="achievement-card"><span style="font-size:28px;">🛡️</span><div><p class="text-sm font-med text-g800">Motorista Seguro</p><p class="text-xs text-g400 mt1">Concluiu Direção Defensiva.</p><span class="badge badge-success mt2">+200 XP</span></div></div>
+          <div class="achievement-card"><span style="font-size:28px;">🔥</span><div><p class="text-sm font-med text-g800">Streak 7 Dias</p><p class="text-xs text-g400 mt1">7 dias consecutivos de aprendizagem.</p><span class="badge badge-success mt2">+100 XP</span></div></div>
+          <div class="achievement-card locked"><span style="font-size:28px;">⭐</span><div><p class="text-sm font-med text-g800">Especialista</p><p class="text-xs text-g400 mt1">Conclua 5 cursos na mesma categoria.</p><span class="badge badge-gray mt2">+300 XP</span></div></div>
+          <div class="achievement-card locked"><span style="font-size:28px;">🏆</span><div><p class="text-sm font-med text-g800">Top 10</p><p class="text-xs text-g400 mt1">Alcance o top 10 do leaderboard.</p><span class="badge badge-gray mt2">+500 XP</span></div></div>
+        </div>
+
+        <!-- Leaderboard -->
+        <p class="section-title">Leaderboard</p>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div class="lb-row"><span style="width:24px;text-align:center;font-size:14px;">🥇</span><div class="avatar av-sm av-navy" style="margin:0 8px;">AB</div><div class="flex-1 min-w-0"><p class="text-sm font-med truncate">Ana Beatriz</p><p class="text-xs text-g400">Operações</p></div><div class="text-right"><p class="text-sm font-bold text-g800">8.120</p><p style="font-size:10px;color:var(--g400);">XP · Nível 12</p></div></div>
+          <div class="lb-row"><span style="width:24px;text-align:center;font-size:14px;">🥈</span><div class="avatar av-sm av-navy" style="margin:0 8px;">CM</div><div class="flex-1 min-w-0"><p class="text-sm font-med truncate">Carlos Mendes</p><p class="text-xs text-g400">Tecnologia</p></div><div class="text-right"><p class="text-sm font-bold text-g800">7.450</p><p style="font-size:10px;color:var(--g400);">XP · Nível 11</p></div></div>
+          <div class="lb-row"><span style="width:24px;text-align:center;font-size:14px;">🥉</span><div class="avatar av-sm av-navy" style="margin:0 8px;">RS</div><div class="flex-1 min-w-0"><p class="text-sm font-med truncate">Renata Souza</p><p class="text-xs text-g400">Comercial</p></div><div class="text-right"><p class="text-sm font-bold text-g800">6.980</p><p style="font-size:10px;color:var(--g400);">XP · Nível 10</p></div></div>
+          <div class="lb-row"><span style="width:24px;text-align:center;font-size:13px;color:var(--g400);">4</span><div class="avatar av-sm av-navy" style="margin:0 8px;">DA</div><div class="flex-1 min-w-0"><p class="text-sm font-med truncate">Diego Alves</p><p class="text-xs text-g400">Logística</p></div><div class="text-right"><p class="text-sm font-bold text-g800">5.600</p><p style="font-size:10px;color:var(--g400);">XP · Nível 9</p></div></div>
+          <div class="lb-row me"><span style="width:24px;text-align:center;font-size:13px;color:var(--brand);">14</span><div class="avatar av-sm av-brand" style="margin:0 8px;">PJ</div><div class="flex-1 min-w-0"><p class="text-sm font-med" style="color:var(--brand-d);">Pedro Jota <span style="font-size:11px;font-weight:400;">(você)</span></p><p class="text-xs text-g400">Operações</p></div><div class="text-right"><p class="text-sm font-bold" style="color:var(--brand-d);">3.240</p><p style="font-size:10px;color:var(--g400);">XP · Nível 7</p></div></div>
+        </div>
+      </div>
+
+      <!-- ══════════ TREINAMENTOS ══════════ -->
+      <div id="page-trainings" class="page max-w">
+        <div class="mb4">
+          <h1 class="text-xl font-bold text-g800">Treinamentos</h1>
+          <p class="text-sm text-g400 mt1">Acompanhe seus treinamentos obrigatórios e opcionais.</p>
+        </div>
+
+        <!-- Resumo -->
+        <div class="grid4 mb5">
+          <div style="padding:16px;border-radius:10px;border:1px solid rgba(240,68,56,.2);background:var(--dang-l);">
+            <p class="text-3xl font-bold" style="color:var(--danger);">1</p>
+            <p class="text-xs text-g600 mt1">Obrigatórios em atraso</p>
+          </div>
+          <div style="padding:16px;border-radius:10px;border:1px solid rgba(247,144,9,.2);background:var(--warn-l);">
+            <p class="text-3xl font-bold" style="color:var(--warn);">2</p>
+            <p class="text-xs text-g600 mt1">Pendentes</p>
+          </div>
+          <div style="padding:16px;border-radius:10px;border:1px solid rgba(18,183,106,.2);background:var(--succ-l);">
+            <p class="text-3xl font-bold" style="color:var(--success);">3</p>
+            <p class="text-xs text-g600 mt1">Concluídos</p>
+          </div>
+          <div style="padding:16px;border-radius:10px;border:1px solid rgba(0,174,239,.2);background:var(--brand-l);">
+            <p class="text-3xl font-bold" style="color:var(--brand);">4</p>
+            <p class="text-xs text-g600 mt1">Opcionais</p>
+          </div>
+        </div>
+
+        <!-- Obrigatórios -->
+        <div class="mb5">
+          <div class="flex items-c gap2 p3 mb3" style="background:var(--dang-l);border:1px solid rgba(240,68,56,.2);border-radius:8px;">
+            <svg width="16" height="16" fill="none" stroke="var(--danger)" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span class="text-sm font-bold" style="color:var(--danger);flex:1;">Obrigatórios</span>
+            <span class="badge badge-danger">1 em atraso</span>
+          </div>
+          <div class="space-y">
+            <div class="training-item late">
+              <span class="status-dot" style="background:var(--danger);"></span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-c gap2 mb1"><span class="text-sm font-med">Direção Defensiva Avançada</span><span class="badge badge-danger">Atrasado</span></div>
+                <div class="flex items-c gap3 text-xs text-g400 mb2"><span>⏱ 120 min</span><span>Prazo: 15/07/2025</span></div>
+                <div class="progress-track progress-h15 track-blue"><div class="progress-fill fill-blue" style="width:75%;"></div></div>
+              </div>
+              <button class="btn btn-danger btn-sm">Continuar</button>
+            </div>
+            <div class="training-item soon">
+              <span class="status-dot" style="background:var(--warn);"></span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-c gap2 mb1"><span class="text-sm font-med">Regulamentação ANTT 2025</span><span class="badge badge-warning">Prazo próximo</span></div>
+                <div class="flex items-c gap3 text-xs text-g400 mb2"><span>⏱ 90 min</span><span>Prazo: 30/06/2025</span></div>
+                <div class="progress-track progress-h15 track-blue"><div class="progress-fill fill-blue" style="width:50%;"></div></div>
+              </div>
+              <button class="btn btn-brand btn-sm">Continuar</button>
+            </div>
+            <div class="training-item">
+              <span class="status-dot" style="background:var(--success);"></span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-c gap2 mb1"><span class="text-sm font-med">Uso da Plataforma Fretebras</span><span class="badge badge-success">Concluído</span></div>
+                <div class="text-xs text-g400">⏱ 45 min</div>
+              </div>
+              <svg width="20" height="20" fill="none" stroke="var(--success)" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Opcionais -->
+        <div>
+          <div class="flex items-c gap2 p3 mb3" style="background:var(--brand-l);border:1px solid rgba(0,174,239,.2);border-radius:8px;">
+            <svg width="16" height="16" fill="none" stroke="var(--brand)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span class="text-sm font-bold" style="color:var(--brand-d);flex:1;">Opcionais</span>
+            <span class="badge badge-blue">+XP ao completar</span>
+          </div>
+          <div class="space-y">
+            <div class="training-item">
+              <span class="status-dot" style="background:var(--brand);"></span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-c gap2 mb1"><span class="text-sm font-med">Manutenção Preventiva de Veículos</span><span class="badge badge-blue">+300 XP</span></div>
+                <div class="flex items-c gap3 text-xs text-g400 mb2"><span>⏱ 180 min</span><span>📚 12 módulos</span></div>
+                <div class="progress-track progress-h15 track-blue"><div class="progress-fill fill-blue" style="width:30%;"></div></div>
+              </div>
+              <button class="btn btn-brand btn-sm">Continuar</button>
+            </div>
+            <div class="training-item">
+              <span class="status-dot" style="background:var(--g200);"></span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-c gap2 mb1"><span class="text-sm font-med">Excel Básico para Gestão de Rotas</span><span class="badge badge-blue">+250 XP</span></div>
+                <div class="text-xs text-g400">⏱ 150 min · 📚 10 módulos</div>
+              </div>
+              <button class="btn btn-outline btn-sm">Iniciar</button>
+            </div>
+            <div class="training-item">
+              <span class="status-dot" style="background:var(--g200);"></span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-c gap2 mb1"><span class="text-sm font-med">Atendimento ao Cliente na Logística</span><span class="badge badge-blue">+100 XP</span></div>
+                <div class="text-xs text-g400">⏱ 60 min · 📚 4 módulos</div>
+              </div>
+              <button class="btn btn-outline btn-sm">Iniciar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ TRILHAS ══════════ -->
+      <div id="page-trails" class="page max-w">
+        <!-- Hero trilha ativa -->
+        <div class="card card-navy p6 mb5">
+          <span class="badge badge-blue mb3" style="display:inline-flex;">Trilha em andamento</span>
+          <h1 class="text-2xl font-bold text-white mb2">Motorista Pro</h1>
+          <p class="text-sm mb4" style="color:rgba(255,255,255,.55);line-height:1.6;">Tudo que você precisa para se tornar um motorista de alto desempenho na plataforma Fretebras.</p>
+          <div class="flex justify-b text-sm mb1" style="color:rgba(255,255,255,.6);">
+            <span>1 de 4 módulos concluídos</span><span style="color:#fff;font-weight:500;">67%</span>
+          </div>
+          <div class="progress-track progress-h2 track-white">
+            <div class="progress-fill" style="width:67%;background:var(--brand);"></div>
+          </div>
+          <p class="text-xs mt1" style="color:rgba(255,255,255,.3);">6h 30min no total</p>
+        </div>
+
+        <!-- Módulos -->
+        <p class="section-title">Módulos</p>
+        <div class="space-y mb5">
+          <!-- concluído -->
+          <div class="module-line">
+            <div class="module-timeline">
+              <div class="module-circle mc-done">✓</div>
+              <div class="vline vl-done"></div>
+            </div>
+            <div class="card" style="flex:1;padding:12px;margin-bottom:0;margin-top:0;">
+              <div class="flex items-c justify-b gap2 mb1">
+                <span class="text-sm font-med">Fundamentos da Plataforma</span>
+                <span style="font-size:10px;color:var(--g400);">10/05/2025</span>
+              </div>
+              <div class="flex items-c gap2"><span class="text-xs text-g400">⏱ 45 min</span><span class="badge badge-success">+80 XP</span></div>
+              <button class="btn btn-ghost btn-sm mt2" style="color:var(--success);">✓ Concluído — rever</button>
+            </div>
+          </div>
+
+          <!-- ativo -->
+          <div class="module-line">
+            <div class="module-timeline">
+              <div class="module-circle mc-active">▶</div>
+              <div class="vline vl-gray"></div>
+            </div>
+            <div class="card" style="flex:1;padding:12px;border-color:rgba(0,174,239,.3);">
+              <div class="flex items-c gap2 mb1">
+                <span class="text-sm font-med">Direção Defensiva Avançada</span>
+              </div>
+              <div class="flex items-c gap2 mb2"><span class="text-xs text-g400">⏱ 120 min</span><span class="badge badge-blue">+200 XP</span></div>
+              <div class="progress-track progress-h15 track-blue mb2"><div class="progress-fill fill-blue" style="width:75%;"></div></div>
+              <button class="btn btn-brand btn-sm">▶ Continuar</button>
+            </div>
+          </div>
+
+          <!-- bloqueado -->
+          <div class="module-line">
+            <div class="module-timeline">
+              <div class="module-circle mc-locked">🔒</div>
+              <div class="vline vl-gray"></div>
+            </div>
+            <div class="card" style="flex:1;padding:12px;opacity:.6;">
+              <p class="text-sm font-med mb1">Manutenção Preventiva</p>
+              <div class="flex items-c gap2 mb1"><span class="text-xs text-g400">⏱ 180 min</span><span class="badge badge-gray">+300 XP</span></div>
+              <p class="text-xs text-g400" style="font-style:italic;">🔒 Disponível após concluir o módulo anterior</p>
+            </div>
+          </div>
+
+          <!-- bloqueado -->
+          <div class="module-line">
+            <div class="module-timeline">
+              <div class="module-circle mc-locked">🔒</div>
+            </div>
+            <div class="card" style="flex:1;padding:12px;opacity:.6;">
+              <p class="text-sm font-med mb1">Gestão de Rotas Eficientes</p>
+              <div class="flex items-c gap2 mb1"><span class="text-xs text-g400">⏱ 45 min</span><span class="badge badge-gray">+100 XP</span></div>
+              <p class="text-xs text-g400" style="font-style:italic;">🔒 Disponível após concluir o módulo anterior</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Outras trilhas -->
+        <p class="section-title">Outras trilhas</p>
+        <div class="trail-card-grid">
+          <div class="card" style="padding:12px;">
+            <div style="width:100%;height:64px;border-radius:8px;background:var(--brand);display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:20px;">I</span></div>
+            <span class="badge badge-gray mb2">Tecnologia</span>
+            <p class="text-sm font-semi text-g800 mb2">IA no Frete</p>
+            <div class="flex items-c gap2 text-xs text-g400 mb2"><span>⏱ 3h 30min</span><span>3 módulos</span></div>
+            <div class="progress-track progress-h15 track-blue mb2"><div class="progress-fill fill-blue" style="width:15%;"></div></div>
+            <button class="btn btn-brand btn-sm btn-full">▶ Continuar trilha</button>
+          </div>
+          <div class="card" style="padding:12px;">
+            <div style="width:100%;height:64px;border-radius:8px;background:var(--danger);display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:20px;">C</span></div>
+            <span class="badge badge-gray mb2">Compliance</span>
+            <p class="text-sm font-semi text-g800 mb2">Compliance & Regulação</p>
+            <div class="flex items-c gap2 text-xs text-g400 mb2"><span>⏱ 2h</span><span>3 módulos</span></div>
+            <div class="progress-track progress-h15 track-blue mb2"><div class="progress-fill fill-blue" style="width:33%;"></div></div>
+            <button class="btn btn-brand btn-sm btn-full">▶ Continuar trilha</button>
+          </div>
+          <div class="card" style="padding:12px;">
+            <div style="width:100%;height:64px;border-radius:8px;background:var(--success);display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:20px;">L</span></div>
+            <span class="badge badge-gray mb2">Soft Skills</span>
+            <p class="text-sm font-semi text-g800 mb2">Liderança na Estrada</p>
+            <div class="flex items-c gap2 text-xs text-g400 mb2"><span>⏱ 2h 40min</span><span>3 módulos</span></div>
+            <button class="btn btn-outline btn-sm btn-full">▶ Iniciar trilha</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ ADMIN ══════════ -->
+      <div id="page-admin" class="page">
+        <div class="admin-topbar">
+          <div>
+            <h1 class="text-2xl font-bold text-g800">Dashboard</h1>
+            <p class="text-sm text-g400 mt1">Visão geral da plataforma FreteLXP</p>
+          </div>
+          <div class="flex gap2">
+            <button class="btn btn-outline btn-sm">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Exportar
+            </button>
+            <button class="btn btn-primary btn-sm">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Novo curso
+            </button>
+          </div>
+        </div>
+
+        <!-- Métricas -->
+        <div class="grid4 mb5">
+          <div class="card">
+            <div class="icon-box mb3" style="background:var(--brand-l);"><svg width="18" height="18" fill="none" stroke="var(--brand)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <p class="text-3xl font-bold text-g800">12.480</p>
+            <p class="text-xs text-g400 mt1">Colaboradores ativos</p>
+            <p class="text-xs mt2" style="color:var(--success);font-weight:500;">+3,2% este mês</p>
+          </div>
+          <div class="card">
+            <div class="icon-box mb3" style="background:var(--succ-l);"><svg width="18" height="18" fill="none" stroke="var(--success)" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+            <p class="text-3xl font-bold text-g800">68%</p>
+            <p class="text-xs text-g400 mt1">Taxa de conclusão</p>
+            <p class="text-xs mt2" style="color:var(--success);font-weight:500;">+5pp vs mês anterior</p>
+          </div>
+          <div class="card">
+            <div class="icon-box mb3" style="background:var(--warn-l);"><svg width="18" height="18" fill="none" stroke="var(--warn)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <p class="text-3xl font-bold text-g800">94.320</p>
+            <p class="text-xs text-g400 mt1">Horas aprendidas</p>
+            <p class="text-xs text-g400 mt2">Acumulado no ano</p>
+          </div>
+          <div class="card">
+            <div class="icon-box mb3" style="background:rgba(13,27,54,.1);"><svg width="18" height="18" fill="none" stroke="var(--navy)" stroke-width="2" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></div>
+            <p class="text-3xl font-bold text-g800">72</p>
+            <p class="text-xs text-g400 mt1">NPS</p>
+            <p class="text-xs text-g400 mt2">Promotores: 74%</p>
+          </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+          <!-- Bar chart -->
+          <div class="card">
+            <div class="flex items-c justify-b mb4">
+              <p class="text-sm font-semi text-g800">Conclusões por mês</p>
+              <div class="flex gap3 text-xs text-g400">
+                <span><span style="display:inline-block;width:8px;height:8px;background:var(--brand);border-radius:2px;margin-right:4px;"></span>Conclusões</span>
+                <span><span style="display:inline-block;width:8px;height:8px;background:var(--g100);border-radius:2px;margin-right:4px;"></span>Iniciados</span>
+              </div>
+            </div>
+            <div class="bar-chart">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+                <div style="flex:1;display:flex;align-items:flex-end;gap:2px;width:100%;">
+                  <div class="bar" style="flex:1;background:var(--g100);height:60%;"></div>
+                  <div class="bar" style="flex:1;background:var(--brand);height:42%;"></div>
+                </div>
+                <span class="bar-label">Jan</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+                <div style="flex:1;display:flex;align-items:flex-end;gap:2px;width:100%;">
+                  <div class="bar" style="flex:1;background:var(--g100);height:68%;"></div>
+                  <div class="bar" style="flex:1;background:var(--brand);height:47%;"></div>
+                </div>
+                <span class="bar-label">Fev</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+                <div style="flex:1;display:flex;align-items:flex-end;gap:2px;width:100%;">
+                  <div class="bar" style="flex:1;background:var(--g100);height:80%;"></div>
+                  <div class="bar" style="flex:1;background:var(--brand);height:55%;"></div>
+                </div>
+                <span class="bar-label">Mar</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+                <div style="flex:1;display:flex;align-items:flex-end;gap:2px;width:100%;">
+                  <div class="bar" style="flex:1;background:var(--g100);height:71%;"></div>
+                  <div class="bar" style="flex:1;background:var(--brand);height:49%;"></div>
+                </div>
+                <span class="bar-label">Abr</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+                <div style="flex:1;display:flex;align-items:flex-end;gap:2px;width:100%;">
+                  <div class="bar" style="flex:1;background:var(--g100);height:90%;"></div>
+                  <div class="bar" style="flex:1;background:var(--brand);height:67%;"></div>
+                </div>
+                <span class="bar-label">Mai</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+                <div style="flex:1;display:flex;align-items:flex-end;gap:2px;width:100%;">
+                  <div class="bar" style="flex:1;background:var(--g100);height:100%;"></div>
+                  <div class="bar" style="flex:1;background:var(--brand);height:76%;"></div>
+                </div>
+                <span class="bar-label">Jun</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Donut / aderência -->
+          <div class="card">
+            <p class="text-sm font-semi text-g800 mb4">Aderência por área</p>
+            <!-- SVG donut simples -->
+            <div class="flex items-c gap4">
+              <svg width="100" height="100" viewBox="0 0 36 36" style="flex-shrink:0;">
+                <circle cx="18" cy="18" r="12" fill="none" stroke="var(--g100)" stroke-width="6"/>
+                <!-- Operações 82% -->
+                <circle cx="18" cy="18" r="12" fill="none" stroke="#00AEEF" stroke-width="6"
+                  stroke-dasharray="61.6 13.6" stroke-dashoffset="0" transform="rotate(-90 18 18)"/>
+                <!-- Tecnologia 91% -->
+                <circle cx="18" cy="18" r="12" fill="none" stroke="#12B76A" stroke-width="6"
+                  stroke-dasharray="5 70.3" stroke-dashoffset="-61.6" transform="rotate(-90 18 18)"/>
+                <!-- Comercial 74% -->
+                <circle cx="18" cy="18" r="12" fill="none" stroke="#F79009" stroke-width="6"
+                  stroke-dasharray="3 72.3" stroke-dashoffset="-66.6" transform="rotate(-90 18 18)"/>
+                <text x="18" y="21" text-anchor="middle" font-size="6" font-weight="700" font-family="Space Grotesk" fill="#1D2939">80%</text>
+              </svg>
+              <div class="donut-legend flex-1">
+                <div class="legend-row"><span class="legend-dot" style="background:#00AEEF;"></span><span class="flex-1">Operações</span><span style="font-weight:600;">82%</span></div>
+                <div class="legend-row"><span class="legend-dot" style="background:#12B76A;"></span><span class="flex-1">Tecnologia</span><span style="font-weight:600;">91%</span></div>
+                <div class="legend-row"><span class="legend-dot" style="background:#F79009;"></span><span class="flex-1">Comercial</span><span style="font-weight:600;">74%</span></div>
+                <div class="legend-row"><span class="legend-dot" style="background:#F04438;"></span><span class="flex-1">Logística</span><span style="font-weight:600;">68%</span></div>
+                <div class="legend-row"><span class="legend-dot" style="background:#0D1B36;"></span><span class="flex-1">Financeiro</span><span style="font-weight:600;">87%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabela + Alertas -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <!-- Top aprendizes -->
+          <div class="card">
+            <p class="text-sm font-semi text-g800 mb3">Top aprendizes</p>
+            <table>
+              <thead><tr><th>#</th><th>Colaborador</th><th>Área</th><th style="text-align:right;">XP</th></tr></thead>
+              <tbody>
+                <tr><td class="text-xs text-g400">1</td><td><div class="flex items-c gap2"><div class="avatar av-sm av-navy">AB</div><span class="text-sm font-med">Ana Beatriz</span></div></td><td class="text-xs text-g400">Operações</td><td class="text-right text-sm font-bold" style="color:var(--brand);">8.120</td></tr>
+                <tr><td class="text-xs text-g400">2</td><td><div class="flex items-c gap2"><div class="avatar av-sm av-navy">CM</div><span class="text-sm font-med">Carlos Mendes</span></div></td><td class="text-xs text-g400">Tecnologia</td><td class="text-right text-sm font-bold" style="color:var(--brand);">7.450</td></tr>
+                <tr><td class="text-xs text-g400">3</td><td><div class="flex items-c gap2"><div class="avatar av-sm av-navy">RS</div><span class="text-sm font-med">Renata Souza</span></div></td><td class="text-xs text-g400">Comercial</td><td class="text-right text-sm font-bold" style="color:var(--brand);">6.980</td></tr>
+                <tr><td class="text-xs text-g400">4</td><td><div class="flex items-c gap2"><div class="avatar av-sm av-navy">DA</div><span class="text-sm font-med">Diego Alves</span></div></td><td class="text-xs text-g400">Logística</td><td class="text-right text-sm font-bold" style="color:var(--brand);">5.600</td></tr>
+                <tr><td class="text-xs text-g400">5</td><td><div class="flex items-c gap2"><div class="avatar av-sm av-brand">PJ</div><span class="text-sm font-med" style="color:var(--brand-d);">Pedro Jota</span></div></td><td class="text-xs text-g400">Operações</td><td class="text-right text-sm font-bold" style="color:var(--brand);">3.240</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Alertas -->
+          <div class="card">
+            <p class="text-sm font-semi text-g800 mb3">Alertas críticos</p>
+            <div class="space-y">
+              <div class="alert-item">
+                <div class="icon-box" style="background:var(--dang-l);color:var(--danger);"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                <div class="flex-1 min-w-0"><p class="text-sm font-med">Treinamentos vencidos</p><p class="text-xs text-g400">134 colaboradores</p></div>
+                <button class="btn btn-outline btn-sm">Ver lista</button>
+              </div>
+              <div class="alert-item">
+                <div class="icon-box" style="background:var(--warn-l);color:var(--warn);"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                <div class="flex-1 min-w-0"><p class="text-sm font-med">Prazos esta semana</p><p class="text-xs text-g400">289 colaboradores</p></div>
+                <button class="btn btn-outline btn-sm">Notificar</button>
+              </div>
+              <div class="alert-item">
+                <div class="icon-box" style="background:var(--brand-l);color:var(--brand);"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+                <div class="flex-1 min-w-0"><p class="text-sm font-med">Sem onboarding</p><p class="text-xs text-g400">47 novos colaboradores</p></div>
+                <button class="btn btn-outline btn-sm">Atribuir trilha</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /main-app -->
+
+<script>
+  function doLogin() {
+    const email = document.getElementById('login-email').value;
+    const errBox = document.getElementById('login-error');
+    if (email && !email.endsWith('@fretebras.com.br')) {
+      errBox.style.display = 'block';
+      errBox.textContent = 'Use seu e-mail corporativo @fretebras.com.br';
+      return;
+    }
+    errBox.style.display = 'none';
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'flex';
+  }
+
+  function showPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function filterCourses(filter, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const items = document.querySelectorAll('#courses-list .course-item');
+    const done  = document.getElementById('done-list');
+    items.forEach(item => {
+      const s = item.dataset.status;
+      item.style.display = (filter === 'all' || filter === s) ? '' : 'none';
+    });
+    if (done) done.parentElement.style.display = (filter === 'all' || filter === 'done') ? '' : 'none';
+  }
+
+  // Permite entrar com Enter
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
+      doLogin();
+    }
+  });
+</script>
+</body>
+</html>
