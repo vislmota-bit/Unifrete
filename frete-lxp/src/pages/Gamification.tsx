@@ -1,14 +1,15 @@
 import { clsx } from 'clsx'
 import { Trophy, Zap, BookCheck, Star } from 'lucide-react'
-import { Card, CardSm, ProgressBar, Avatar, Badge } from '@/components/ui'
+import { Card, Avatar, Badge } from '@/components/ui'
 import { useAuthStore }         from '@/store/authStore'
 import { useGamificationStore } from '@/store/gamificationStore'
+import type { User } from '@/types'
 
 // ── Dias da semana para o streak ─────────────────────────────────────────────
 const WEEK_DAYS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
 
 // ── Banner de nível ───────────────────────────────────────────────────────────
-function LevelBanner({ user }: { user: NonNullable<ReturnType<typeof useAuthStore>['user']> }) {
+function LevelBanner({ user }: { user: User }) {
   const totalXP = user.xp + user.xpToNextLevel
   const pct     = Math.round((user.xp / totalXP) * 100)
 
@@ -61,7 +62,7 @@ function LevelBanner({ user }: { user: NonNullable<ReturnType<typeof useAuthStor
 }
 
 // ── Grid de métricas ──────────────────────────────────────────────────────────
-function MetricsGrid({ user }: { user: NonNullable<ReturnType<typeof useAuthStore>['user']> }) {
+function MetricsGrid({ user }: { user: User }) {
   const metrics = [
     { icon: BookCheck, label: 'Cursos concluídos', value: '3',   color: 'text-brand bg-brand-light' },
     { icon: Trophy,    label: 'Conquistas',         value: '3',   color: 'text-warning bg-warning-light' },

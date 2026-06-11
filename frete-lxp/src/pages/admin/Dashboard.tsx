@@ -1,10 +1,10 @@
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend,
+  PieChart, Pie, Cell,
 } from 'recharts'
 import { Download, Plus, Users, TrendingUp, Clock, ThumbsUp, AlertTriangle } from 'lucide-react'
 import { clsx } from 'clsx'
-import { Button, Badge, Avatar, Card, ProgressBar } from '@/components/ui'
+import { Button, Avatar, Card, ProgressBar } from '@/components/ui'
 import {
   MOCK_METRICS, MOCK_MONTHLY, MOCK_AREA_ADHERENCE,
   MOCK_LEADERBOARD,

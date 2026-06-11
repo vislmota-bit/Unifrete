@@ -1,6 +1,6 @@
 import { AlertTriangle, Lightbulb, Clock, Layers, CheckCircle } from 'lucide-react'
 import { clsx } from 'clsx'
-import { Button, Badge, Card, ProgressBar } from '@/components/ui'
+import { Button, Badge, ProgressBar } from '@/components/ui'
 import { useCoursesStore } from '@/store/coursesStore'
 import type { Course, Enrollment } from '@/types'
 
