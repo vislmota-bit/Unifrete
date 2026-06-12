@@ -1430,7 +1430,7 @@
                 <span class="tag-chip">Segurança</span><span class="tag-chip">Motorista</span>
               </div>
             </div>
-            <button class="btn btn-outline btn-sm" onclick="showCourseForm()">✏️ Editar</button>
+            <button class="btn btn-outline btn-sm" onclick="showCourseForm({title:'Direção Defensiva Avançada',desc:'Técnicas de condução segura para motoristas.',xp:200,tags:['Segurança','Motorista'],contentType:'video',contentUrl:'https://www.youtube.com/watch?v=jNQXAC9IVRw'})">✏️ Editar</button>
           </div>
           <!-- Curso 2 -->
           <div class="card flex items-c gap4">
@@ -1446,7 +1446,7 @@
                 <span class="tag-chip">Compliance</span><span class="tag-chip">Regulação</span>
               </div>
             </div>
-            <button class="btn btn-outline btn-sm" onclick="showCourseForm()">✏️ Editar</button>
+            <button class="btn btn-outline btn-sm" onclick="showCourseForm({title:'Regulamentação ANTT 2025',desc:'Normas vigentes da ANTT para transporte rodoviário.',xp:150,tags:['Compliance','Regulação'],contentType:'pdf',contentUrl:'https://www.africau.edu/images/default/sample.pdf'})">✏️ Editar</button>
           </div>
           <!-- Curso 3 rascunho -->
           <div class="card flex items-c gap4">
@@ -1462,7 +1462,7 @@
                 <span class="tag-chip">Tecnologia</span>
               </div>
             </div>
-            <button class="btn btn-outline btn-sm" onclick="showCourseForm()">✏️ Editar</button>
+            <button class="btn btn-outline btn-sm" onclick="showCourseForm({title:'Excel para Gestão de Rotas',desc:'Planilhas avançadas para controle de rotas e fretes.',xp:250,tags:['Tecnologia'],contentType:'video',contentUrl:''})">✏️ Editar</button>
           </div>
         </div>
       </div>
@@ -1555,7 +1555,33 @@
           </div>
         </div>
 
-        <!-- 4. Tags -->
+        <!-- 4. Conteúdo principal -->
+        <div class="form-section">
+          <div class="form-section-head">
+            <div class="form-section-icon">🎬</div>
+            <span class="text-sm font-semi text-g800">Conteúdo principal</span>
+          </div>
+          <p class="text-xs text-g400 mb3">Cole o link do vídeo, PDF, áudio ou documento que os alunos vão acessar neste curso.</p>
+          <div class="field">
+            <label>Tipo de conteúdo</label>
+            <div class="flex gap2 flex-wrap" id="content-type-btns">
+              <button class="type-btn active-optional" id="ctype-video"  onclick="setCourseContentType('video')">🎬 Vídeo (YouTube)</button>
+              <button class="type-btn"                 id="ctype-audio"  onclick="setCourseContentType('audio')">🎧 Áudio / Podcast</button>
+              <button class="type-btn"                 id="ctype-pdf"    onclick="setCourseContentType('pdf')">📄 PDF</button>
+              <button class="type-btn"                 id="ctype-doc"    onclick="setCourseContentType('doc')">📝 Documento (Google Docs)</button>
+            </div>
+            <input type="hidden" id="c-content-type" value="video" />
+          </div>
+          <div class="field">
+            <label>URL do conteúdo *</label>
+            <input type="url" id="c-content-url" placeholder="Cole o link aqui..." oninput="previewCourseContent()" />
+            <p class="text-xs text-g400 mt1" id="c-content-hint">Ex: https://www.youtube.com/watch?v=... ou https://youtu.be/...</p>
+          </div>
+          <!-- preview inline -->
+          <div id="c-content-preview" style="display:none;margin-top:8px;border-radius:10px;overflow:hidden;border:1px solid var(--g100);"></div>
+        </div>
+
+        <!-- 5. Tags -->
         <div class="form-section">
           <div class="form-section-head">
             <div class="form-section-icon">🏷️</div>
@@ -2082,7 +2108,7 @@
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
     document.getElementById('page-' + id).classList.add('active');
-    btn.classList.add('active');
+    if (btn) btn.classList.add('active');
   }
 
   function filterCourses(filter, btn) {
@@ -2097,7 +2123,66 @@
     if (done) done.parentElement.style.display = (filter === 'all' || filter === 'done') ? '' : 'none';
   }
 
-  // ── Curso: tipo ────────────────────────────────────────────────────────────
+  // ── Curso: tipo de conteúdo ────────────────────────────────────────────────
+  function setCourseContentType(type) {
+    document.getElementById('c-content-type').value = type
+    const hints = {
+      video: 'Ex: https://www.youtube.com/watch?v=... ou https://youtu.be/...',
+      audio: 'Ex: https://exemplo.com/audio.mp3 ou link de podcast',
+      pdf:   'Ex: https://exemplo.com/documento.pdf',
+      doc:   'Ex: https://docs.google.com/document/d/... (deve ser público)',
+    }
+    ;['video','audio','pdf','doc'].forEach(t => {
+      const b = document.getElementById('ctype-'+t)
+      b.className = 'type-btn' + (t === type ? ' active-optional' : '')
+    })
+    document.getElementById('c-content-hint').textContent = hints[type]
+    document.getElementById('c-content-url').value = ''
+    document.getElementById('c-content-preview').style.display = 'none'
+  }
+
+  function updateContentHint() {
+    const type = document.getElementById('c-content-type').value || 'video'
+    const hints = {
+      video: 'Ex: https://www.youtube.com/watch?v=... ou https://youtu.be/...',
+      audio: 'Ex: https://exemplo.com/audio.mp3 ou link de podcast',
+      pdf:   'Ex: https://exemplo.com/documento.pdf',
+      doc:   'Ex: https://docs.google.com/document/d/... (deve ser público)',
+    }
+    ;['video','audio','pdf','doc'].forEach(t => {
+      const b = document.getElementById('ctype-'+t)
+      if (b) b.className = 'type-btn' + (t === type ? ' active-optional' : '')
+    })
+    const hint = document.getElementById('c-content-hint')
+    if (hint) hint.textContent = hints[type]
+  }
+
+  function previewCourseContent() {
+    const type = document.getElementById('c-content-type').value
+    const url  = document.getElementById('c-content-url').value.trim()
+    const box  = document.getElementById('c-content-preview')
+    if (!url) { box.style.display = 'none'; return }
+
+    if (type === 'video') {
+      const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{11})/)
+      if (!m) { box.style.display = 'none'; return }
+      box.style.display = 'block'
+      box.innerHTML = `<div style="position:relative;padding-bottom:56.25%;height:0;"><iframe src="https://www.youtube.com/embed/${m[1]}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen></iframe></div>`
+    } else if (type === 'audio') {
+      box.style.display = 'block'
+      box.innerHTML = `<div style="background:linear-gradient(135deg,#6D28D9,#4C1D95);padding:20px 16px;border-radius:10px;"><p style="color:#fff;font-size:12px;margin-bottom:8px;">🎧 Pré-escuta</p><audio controls style="width:100%;accent-color:#A78BFA;"><source src="${url}"/></audio></div>`
+    } else if (type === 'pdf') {
+      let embed = url.includes('drive.google.com') ? url.replace('/view','/preview').replace('/edit','/preview') : `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`
+      box.style.display = 'block'
+      box.innerHTML = `<iframe src="${embed}" style="width:100%;height:380px;border:none;"></iframe>`
+    } else if (type === 'doc') {
+      let embed = url.includes('docs.google.com') ? url.replace('/edit','').replace(/\/[^/]*$/,'/preview') : `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`
+      box.style.display = 'block'
+      box.innerHTML = `<iframe src="${embed}" style="width:100%;height:380px;border:none;"></iframe>`
+    }
+  }
+
+  // ── Curso: tipo (obrigatório/opcional) ────────────────────────────────────
   function setType(btn, type) {
     document.getElementById('btn-mandatory').className = 'type-btn' + (type==='mandatory' ? ' active-mandatory' : '')
     document.getElementById('btn-optional').className  = 'type-btn' + (type==='optional'  ? ' active-optional'  : '')
@@ -2159,8 +2244,22 @@
     btn.className = active ? 'btn btn-outline btn-sm' : 'btn btn-primary btn-sm'
   }
 
-  // ── Curso: Salvar ──────────────────────────────────────────────────────────
-  function showCourseForm() { showPage('admin-course-new', null) }
+  // ── Curso: form ───────────────────────────────────────────────────────────
+  function showCourseForm(data) {
+    // Reset fields
+    document.getElementById('c-title').value = data ? data.title : ''
+    document.getElementById('c-desc').value  = data ? data.desc  : ''
+    document.getElementById('xp-val').value  = data ? data.xp    : 100
+    document.getElementById('xp-slider').value = data ? data.xp  : 100
+    document.getElementById('c-content-type').value = data ? (data.contentType || 'video') : 'video'
+    document.getElementById('c-content-url').value  = data ? (data.contentUrl  || '')      : ''
+    updateContentHint()
+    courseTags = data ? (data.tags || []) : []
+    renderTags()
+    clearBanner()
+    document.querySelector('#page-admin-course-new h1').textContent = data ? 'Editar curso' : 'Novo curso'
+    showPage('admin-course-new', null)
+  }
   function saveCourse(status) {
     const title = document.getElementById('c-title').value.trim()
     if (!title) { alert('Por favor, informe o nome do curso.'); return }
@@ -2178,6 +2277,18 @@
         <div class="flex items-c gap3 flex-wrap text-xs text-g400"><span style="color:var(--brand);font-weight:500;">⚡ ${xp} XP</span>${tagsHtml}</div>
       </div>
       <button class="btn btn-outline btn-sm">✏️ Editar</button>`
+    const contentType = document.getElementById('c-content-type').value
+    const contentUrl  = document.getElementById('c-content-url').value.trim()
+    const ctLabel = {video:'🎬 Vídeo',audio:'🎧 Áudio',pdf:'📄 PDF',doc:'📝 Doc'}[contentType] || ''
+    const ctHtml = contentUrl ? `<span style="font-size:10px;color:var(--g400);">${ctLabel}</span>` : ''
+    const courseData = {title, desc: document.getElementById('c-desc').value.trim(), xp, tags: [...courseTags], contentType, contentUrl}
+    li.innerHTML = `
+      <div style="width:56px;height:56px;border-radius:8px;background:#0D1B36;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;">${title.charAt(0)}</div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-c gap2 mb1 flex-wrap"><span class="text-sm font-med text-g800">${title}</span>${pill}</div>
+        <div class="flex items-c gap3 flex-wrap text-xs text-g400"><span style="color:var(--brand);font-weight:500;">⚡ ${xp} XP</span>${tagsHtml}${ctHtml}</div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick='showCourseForm(${JSON.stringify(courseData)})'>✏️ Editar</button>`
     document.getElementById('courses-admin-list').prepend(li)
     showPage('admin-courses', null)
   }
