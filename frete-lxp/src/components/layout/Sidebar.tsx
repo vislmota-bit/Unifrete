@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import {
   BookOpen, Map, Trophy, ClipboardList,
-  LayoutDashboard, X, Menu, Newspaper, FileVideo,
+  LayoutDashboard, X, Menu, Newspaper, FileVideo, Users, GraduationCap,
 } from 'lucide-react'
 import { clsx } from 'clsx'
 import { Avatar } from '@/components/ui'
@@ -23,8 +23,10 @@ const navGroups = [
   {
     label: 'Gestão',
     items: [
-      { to: '/admin',         icon: LayoutDashboard, label: 'Dashboard Admin',  badge: 0 },
-      { to: '/admin/content', icon: FileVideo,     label: 'Gestão de Conteúdo', badge: 0 },
+      { to: '/admin',          icon: LayoutDashboard, label: 'Dashboard',         badge: 0 },
+      { to: '/admin/courses',  icon: GraduationCap,   label: 'Cursos',            badge: 0 },
+      { to: '/admin/users',    icon: Users,           label: 'Usuários',          badge: 0 },
+      { to: '/admin/content',  icon: FileVideo,       label: 'Conteúdo',          badge: 0 },
     ],
   },
 ]

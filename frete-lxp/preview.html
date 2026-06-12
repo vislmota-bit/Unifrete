@@ -401,6 +401,82 @@
   .cat-law     { background: var(--dang-l);  color: var(--danger); }
   .cat-tip     { background: var(--succ-l);  color: var(--success); }
 
+  /* ── ADMIN FORMS ── */
+  .form-section { background:#fff; border:1px solid var(--g100); border-radius:12px; padding:16px; margin-bottom:16px; }
+  .form-section-head { display:flex;align-items:center;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--g100);margin-bottom:14px; }
+  .form-section-icon { width:28px;height:28px;border-radius:6px;background:var(--brand-l);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--brand); }
+  .form-row { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
+  .field { display:flex;flex-direction:column;gap:4px;margin-bottom:12px; }
+  .field label { font-size:12px;font-weight:500;color:var(--g800); }
+  .field input, .field select, .field textarea {
+    padding:8px 12px;border:1px solid var(--g200);border-radius:8px;
+    font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:all .15s;
+    background:#fff; width:100%;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color:var(--brand);box-shadow:0 0 0 2px rgba(0,174,239,.15);
+  }
+  .field textarea { resize:none; }
+  .type-toggle { display:flex;gap:8px;margin-bottom:12px; }
+  .type-btn {
+    flex:1;padding:8px;border-radius:8px;font-size:12px;font-family:'DM Sans',sans-serif;
+    font-weight:500;border:1px solid var(--g200);background:#fff;cursor:pointer;transition:all .15s;
+  }
+  .type-btn.active-mandatory { background:var(--danger);color:#fff;border-color:var(--danger); }
+  .type-btn.active-optional  { background:var(--brand);color:#fff;border-color:var(--brand); }
+  .banner-drop {
+    width:100%;height:120px;border-radius:10px;border:2px dashed var(--g200);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    cursor:pointer;transition:all .15s;text-align:center;
+  }
+  .banner-drop:hover { border-color:var(--brand);background:var(--brand-l); }
+  .color-swatch { width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:all .15s; }
+  .color-swatch.sel { border-color:#1D2939;transform:scale(1.15); }
+  .xp-slider { width:100%;accent-color:var(--brand); }
+  .tag-chip {
+    display:inline-flex;align-items:center;gap:4px;
+    padding:2px 8px;border-radius:6px;background:var(--brand-l);
+    color:var(--brand-d);font-size:11px;font-weight:500;border:1px solid rgba(0,174,239,.2);
+  }
+  .tag-chip button { background:none;border:none;cursor:pointer;color:inherit;line-height:1;padding:0; }
+  .perm-row {
+    display:flex;align-items:flex-start;gap:10px;padding:8px 10px;
+    border:1px solid var(--g100);border-radius:8px;cursor:pointer;transition:all .15s;
+  }
+  .perm-row.checked { background:var(--brand-l);border-color:rgba(0,174,239,.3); }
+  .toggle-switch { position:relative;width:36px;height:20px;flex-shrink:0; }
+  .toggle-switch input { opacity:0;width:0;height:0; }
+  .toggle-thumb {
+    position:absolute;cursor:pointer;inset:0;border-radius:20px;
+    background:var(--g200);transition:.2s;
+  }
+  .toggle-thumb::before {
+    content:'';position:absolute;width:14px;height:14px;left:3px;bottom:3px;
+    border-radius:50%;background:#fff;transition:.2s;
+  }
+  input:checked + .toggle-thumb { background:var(--success); }
+  input:checked + .toggle-thumb::before { transform:translateX(16px); }
+
+  /* User table */
+  .status-pill {
+    display:inline-flex;align-items:center;gap:4px;
+    padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500;
+  }
+  .pill-active   { background:var(--succ-l);color:var(--success); }
+  .pill-inactive { background:var(--g100);color:var(--g400); }
+  .role-badge { padding:2px 8px;border-radius:6px;font-size:10px;font-weight:500; }
+  .role-user    { background:var(--brand-l);color:var(--brand-d); }
+  .role-manager { background:var(--warn-l);color:var(--warn); }
+  .role-admin   { background:var(--navy);color:#fff; }
+
+  /* Modal usuário */
+  .user-modal-overlay {
+    display:none;position:fixed;inset:0;z-index:100;
+    background:rgba(13,27,54,.55);align-items:center;justify-content:center;padding:16px;
+  }
+  .user-modal-overlay.open { display:flex; }
+  .user-modal { background:#fff;border-radius:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.2); }
+
   /* ── ADMIN ── */
   .admin-topbar {
     display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;
@@ -679,7 +755,15 @@
       <div class="sb-group-label" style="margin-top:12px;">Gestão</div>
       <button class="sb-item" onclick="showPage('admin',this)">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        Dashboard Admin
+        Dashboard
+      </button>
+      <button class="sb-item" onclick="showPage('admin-courses',this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        Cursos
+      </button>
+      <button class="sb-item" onclick="showPage('admin-users',this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Usuários
       </button>
     </nav>
     <div class="sb-footer">
@@ -1319,6 +1403,304 @@
         </div>
       </div>
 
+      <!-- ══════════ ADMIN CURSOS ══════════ -->
+      <div id="page-admin-courses" class="page">
+        <div class="admin-topbar">
+          <div>
+            <h1 class="text-2xl font-bold text-g800">Cursos</h1>
+            <p class="text-sm text-g400 mt1">Gerencie e crie cursos da plataforma.</p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="showPage('admin-course-new', document.querySelector('.sb-item.active'))">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Novo curso
+          </button>
+        </div>
+        <div class="space-y" id="courses-admin-list">
+          <!-- Curso 1 -->
+          <div class="card flex items-c gap4">
+            <div style="width:56px;height:56px;border-radius:8px;background:#0D1B36;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;">D</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-c gap2 mb1 flex-wrap">
+                <span class="text-sm font-med text-g800">Direção Defensiva Avançada</span>
+                <span class="badge badge-success"><span class="badge-dot" style="background:var(--success);"></span>Publicado</span>
+                <span class="badge badge-danger">Obrigatório</span>
+              </div>
+              <div class="flex items-c gap3 flex-wrap text-xs text-g400">
+                <span style="color:var(--brand);font-weight:500;">⚡ 200 XP</span>
+                <span class="tag-chip">Segurança</span><span class="tag-chip">Motorista</span>
+              </div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="showCourseForm()">✏️ Editar</button>
+          </div>
+          <!-- Curso 2 -->
+          <div class="card flex items-c gap4">
+            <div style="width:56px;height:56px;border-radius:8px;background:#0084C1;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;">R</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-c gap2 mb1 flex-wrap">
+                <span class="text-sm font-med text-g800">Regulamentação ANTT 2025</span>
+                <span class="badge badge-success"><span class="badge-dot" style="background:var(--success);"></span>Publicado</span>
+                <span class="badge badge-danger">Obrigatório</span>
+              </div>
+              <div class="flex items-c gap3 flex-wrap text-xs text-g400">
+                <span style="color:var(--brand);font-weight:500;">⚡ 150 XP</span>
+                <span class="tag-chip">Compliance</span><span class="tag-chip">Regulação</span>
+              </div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="showCourseForm()">✏️ Editar</button>
+          </div>
+          <!-- Curso 3 rascunho -->
+          <div class="card flex items-c gap4">
+            <div style="width:56px;height:56px;border-radius:8px;background:#475467;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;">E</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-c gap2 mb1 flex-wrap">
+                <span class="text-sm font-med text-g800">Excel para Gestão de Rotas</span>
+                <span class="badge badge-gray"><span class="badge-dot" style="background:var(--g400);"></span>Rascunho</span>
+                <span class="badge badge-blue">Opcional</span>
+              </div>
+              <div class="flex items-c gap3 flex-wrap text-xs text-g400">
+                <span style="color:var(--brand);font-weight:500;">⚡ 250 XP</span>
+                <span class="tag-chip">Tecnologia</span>
+              </div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="showCourseForm()">✏️ Editar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ ADMIN NOVO CURSO ══════════ -->
+      <div id="page-admin-course-new" class="page">
+        <div class="flex items-c gap2 mb4">
+          <button onclick="showPage('admin-courses', null)" class="btn btn-ghost btn-sm">← Voltar</button>
+        </div>
+        <div class="flex items-c justify-b mb5">
+          <div>
+            <h1 class="text-2xl font-bold text-g800">Novo curso</h1>
+            <p class="text-sm text-g400 mt1">Preencha os dados para criar o curso.</p>
+          </div>
+        </div>
+
+        <!-- 1. Dados básicos -->
+        <div class="form-section">
+          <div class="form-section-head">
+            <div class="form-section-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </div>
+            <span class="text-sm font-semi text-g800">Dados básicos</span>
+          </div>
+          <div class="field"><label>Nome do curso *</label><input type="text" id="c-title" placeholder="Ex: Direção Defensiva Avançada" /></div>
+          <div class="field"><label>Descrição</label><textarea id="c-desc" rows="3" placeholder="Descreva o objetivo e o conteúdo..."></textarea></div>
+          <div class="field">
+            <label>Tipo</label>
+            <div class="type-toggle">
+              <button class="type-btn active-mandatory" onclick="setType(this,'mandatory')" id="btn-mandatory">⚠️ Obrigatório</button>
+              <button class="type-btn" onclick="setType(this,'optional')"  id="btn-optional" >✨ Opcional</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Banner -->
+        <div class="form-section">
+          <div class="form-section-head">
+            <div class="form-section-icon">🖼️</div>
+            <span class="text-sm font-semi text-g800">Banner do curso</span>
+          </div>
+          <div class="banner-drop" id="banner-drop" onclick="document.getElementById('banner-file').click()">
+            <div id="banner-preview" style="display:none;width:100%;height:100%;position:relative;">
+              <img id="banner-img" style="width:100%;height:100%;object-fit:cover;border-radius:8px;" />
+              <button onclick="event.stopPropagation();clearBanner()" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.5);border:none;border-radius:50%;width:22px;height:22px;color:#fff;cursor:pointer;font-size:12px;">✕</button>
+            </div>
+            <div id="banner-placeholder">
+              <div style="font-size:28px;margin-bottom:6px;">🖼️</div>
+              <p class="text-sm text-g400">Clique ou arraste a imagem do banner</p>
+              <p class="text-xs text-g400 mt1">PNG, JPG · 1280×360px recomendado</p>
+            </div>
+          </div>
+          <input type="file" id="banner-file" accept="image/*" style="display:none" onchange="previewBanner(event)" />
+          <div class="flex gap2 mt3 flex-wrap">
+            <p class="text-xs text-g600 w-full mb1">Cor de fundo (sem imagem):</p>
+            <div class="color-swatch sel" style="background:#0D1B36;" onclick="selectColor(this,'#0D1B36')"></div>
+            <div class="color-swatch" style="background:#00AEEF;" onclick="selectColor(this,'#00AEEF')"></div>
+            <div class="color-swatch" style="background:#0084C1;" onclick="selectColor(this,'#0084C1')"></div>
+            <div class="color-swatch" style="background:#12B76A;" onclick="selectColor(this,'#12B76A')"></div>
+            <div class="color-swatch" style="background:#F79009;" onclick="selectColor(this,'#F79009')"></div>
+            <div class="color-swatch" style="background:#F04438;" onclick="selectColor(this,'#F04438')"></div>
+            <div class="color-swatch" style="background:#475467;" onclick="selectColor(this,'#475467')"></div>
+            <div class="color-swatch" style="background:#6D28D9;" onclick="selectColor(this,'#6D28D9')"></div>
+          </div>
+        </div>
+
+        <!-- 3. XP -->
+        <div class="form-section">
+          <div class="form-section-head">
+            <div class="form-section-icon">⚡</div>
+            <span class="text-sm font-semi text-g800">Pontuação XP</span>
+          </div>
+          <div class="field">
+            <label>XP concedido ao concluir</label>
+            <div class="flex items-c gap3">
+              <input type="range" class="xp-slider flex-1" min="10" max="500" step="10" value="100" id="xp-slider" oninput="document.getElementById('xp-val').value=this.value" />
+              <div class="flex items-c gap1" style="border:1px solid var(--g200);border-radius:8px;padding:4px 10px;">
+                <span style="color:var(--brand);font-size:13px;">⚡</span>
+                <input type="number" id="xp-val" value="100" min="10" max="500" style="width:44px;font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--brand);border:none;outline:none;font-size:13px;" oninput="document.getElementById('xp-slider').value=this.value" />
+              </div>
+            </div>
+            <div class="flex gap2 mt2 flex-wrap">
+              <button class="btn btn-outline btn-sm" onclick="setXP(50)">50</button>
+              <button class="btn btn-outline btn-sm" onclick="setXP(100)">100</button>
+              <button class="btn btn-outline btn-sm" onclick="setXP(150)">150</button>
+              <button class="btn btn-outline btn-sm" onclick="setXP(200)">200</button>
+              <button class="btn btn-outline btn-sm" onclick="setXP(300)">300</button>
+              <button class="btn btn-outline btn-sm" onclick="setXP(500)">500</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Tags -->
+        <div class="form-section">
+          <div class="form-section-head">
+            <div class="form-section-icon">🏷️</div>
+            <span class="text-sm font-semi text-g800">Tags</span>
+          </div>
+          <p class="text-xs text-g400 mb2">Tags associam o curso a trilhas, áreas e categorias de busca.</p>
+          <div id="tags-container" class="flex flex-wrap gap2 mb2"></div>
+          <div class="flex gap2">
+            <input type="text" id="tag-input" placeholder="Digite e pressione Enter" style="flex:1;padding:7px 12px;border:1px solid var(--g200);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;" onkeydown="if(event.key==='Enter'){addTag();event.preventDefault()}" />
+            <button class="btn btn-outline btn-sm" onclick="addTag()">+ Adicionar</button>
+          </div>
+          <p class="text-xs text-g400 mt1">Sugestões: Segurança · Compliance · Motorista · Tecnologia</p>
+        </div>
+
+        <!-- 5. Permissões -->
+        <div class="form-section">
+          <div class="form-section-head">
+            <div class="form-section-icon">🔒</div>
+            <span class="text-sm font-semi text-g800">Permissões de acesso</span>
+          </div>
+          <div class="field">
+            <label>Perfis com acesso</label>
+            <div class="flex gap2 flex-wrap">
+              <button class="btn btn-primary btn-sm" id="perm-user"    onclick="togglePerm(this,'user')">👤 Colaborador</button>
+              <button class="btn btn-primary btn-sm" id="perm-manager" onclick="togglePerm(this,'manager')">👔 Gestor</button>
+              <button class="btn btn-outline btn-sm" id="perm-admin"   onclick="togglePerm(this,'admin')">⚙️ Admin</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Restringir por área <span class="text-g400" style="font-weight:400;">(vazio = todas)</span></label>
+            <div class="flex gap2 flex-wrap" id="area-perms">
+              <button class="btn btn-outline btn-sm" onclick="toggleArea(this)">Operações</button>
+              <button class="btn btn-outline btn-sm" onclick="toggleArea(this)">Tecnologia</button>
+              <button class="btn btn-outline btn-sm" onclick="toggleArea(this)">Comercial</button>
+              <button class="btn btn-outline btn-sm" onclick="toggleArea(this)">Logística</button>
+              <button class="btn btn-outline btn-sm" onclick="toggleArea(this)">Financeiro</button>
+              <button class="btn btn-outline btn-sm" onclick="toggleArea(this)">RH</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ações -->
+        <div class="flex items-c justify-b pb6">
+          <button class="btn btn-outline btn-md" onclick="showPage('admin-courses',null)">Cancelar</button>
+          <div class="flex gap2">
+            <button class="btn btn-outline btn-md" onclick="saveCourse('draft')">Salvar rascunho</button>
+            <button class="btn btn-primary btn-md" onclick="saveCourse('published')">✓ Publicar curso</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ ADMIN USUÁRIOS ══════════ -->
+      <div id="page-admin-users" class="page">
+        <div class="admin-topbar">
+          <div>
+            <h1 class="text-2xl font-bold text-g800">Usuários</h1>
+            <p class="text-sm text-g400 mt1">Cadastre e gerencie os colaboradores da plataforma.</p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openUserForm()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Novo usuário
+          </button>
+        </div>
+
+        <!-- Cards resumo -->
+        <div class="grid4 mb5">
+          <div style="padding:14px;border-radius:10px;border:1px solid var(--g100);background:var(--g50);">
+            <p class="text-3xl font-bold text-g800">4</p><p class="text-xs text-g600 mt1">Total de usuários</p>
+          </div>
+          <div style="padding:14px;border-radius:10px;border:1px solid rgba(18,183,106,.2);background:var(--succ-l);">
+            <p class="text-3xl font-bold" style="color:var(--success);">3</p><p class="text-xs text-g600 mt1">Usuários ativos</p>
+          </div>
+          <div style="padding:14px;border-radius:10px;border:1px solid rgba(0,174,239,.2);background:var(--brand-l);">
+            <p class="text-3xl font-bold" style="color:var(--brand-d);">1</p><p class="text-xs text-g600 mt1">Administradores</p>
+          </div>
+          <div style="padding:14px;border-radius:10px;border:1px solid rgba(247,144,9,.2);background:var(--warn-l);">
+            <p class="text-3xl font-bold" style="color:var(--warn);">1</p><p class="text-xs text-g600 mt1">Gestores</p>
+          </div>
+        </div>
+
+        <!-- Tabela -->
+        <div class="card" style="padding:0;overflow:hidden;">
+          <!-- Barra de filtro -->
+          <div class="flex items-c gap3 p4" style="border-bottom:1px solid var(--g100);">
+            <div class="input-rel has-icon flex-1">
+              <span class="input-icon"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+              <input type="text" placeholder="Buscar por nome ou e-mail..." style="width:100%;" oninput="filterUsers(this.value)" />
+            </div>
+            <div class="tabs" style="margin-bottom:0;">
+              <button class="tab active" onclick="filterUserRole('all',this)">Todos</button>
+              <button class="tab" onclick="filterUserRole('user',this)">Colaboradores</button>
+              <button class="tab" onclick="filterUserRole('manager',this)">Gestores</button>
+              <button class="tab" onclick="filterUserRole('admin',this)">Admins</button>
+            </div>
+          </div>
+          <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <thead>
+              <tr style="text-align:left;border-bottom:1px solid var(--g100);">
+                <th style="padding:10px 16px;font-size:11px;font-weight:500;color:var(--g400);">Usuário</th>
+                <th style="padding:10px 16px;font-size:11px;font-weight:500;color:var(--g400);">Diretoria</th>
+                <th style="padding:10px 16px;font-size:11px;font-weight:500;color:var(--g400);">Gestor</th>
+                <th style="padding:10px 16px;font-size:11px;font-weight:500;color:var(--g400);">Perfil</th>
+                <th style="padding:10px 16px;font-size:11px;font-weight:500;color:var(--g400);">Status</th>
+                <th style="padding:10px 16px;font-size:11px;font-weight:500;color:var(--g400);text-align:right;">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+              <tr class="user-row" data-role="user" style="border-bottom:1px solid var(--g50);">
+                <td style="padding:12px 16px;"><div class="flex items-c gap2"><div class="avatar av-sm av-navy">PJ</div><div><p class="text-sm font-med text-g800">Pedro Jota</p><p class="text-xs text-g400">pedro.jota@fretebras.com.br</p></div></div></td>
+                <td style="padding:12px 16px;font-size:12px;color:var(--g600);">Dir. de Operações</td>
+                <td style="padding:12px 16px;font-size:12px;color:var(--g600);">Carlos Mendes</td>
+                <td style="padding:12px 16px;"><span class="role-badge role-user">Colaborador</span></td>
+                <td style="padding:12px 16px;"><span class="status-pill pill-active"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);"></span>Ativo</span></td>
+                <td style="padding:12px 16px;text-align:right;"><button class="btn btn-ghost btn-sm" onclick="openUserForm('PJ','Pedro Jota')">✏️</button></td>
+              </tr>
+              <tr class="user-row" data-role="manager" style="border-bottom:1px solid var(--g50);">
+                <td style="padding:12px 16px;"><div class="flex items-c gap2"><div class="avatar av-sm av-navy">AB</div><div><p class="text-sm font-med text-g800">Ana Beatriz</p><p class="text-xs text-g400">ana.beatriz@fretebras.com.br</p></div></div></td>
+                <td style="padding:12px 16px;font-size:12px;color:var(--g600);">Dir. de Operações</td>
+                <td style="padding:12px 16px;font-size:12px;color:var(--g600);">Rodrigo Lima</td>
+                <td style="padding:12px 16px;"><span class="role-badge role-manager">Gestor</span></td>
+                <td style="padding:12px 16px;"><span class="status-pill pill-active"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);"></span>Ativo</span></td>
+                <td style="padding:12px 16px;text-align:right;"><button class="btn btn-ghost btn-sm" onclick="openUserForm('AB','Ana Beatriz')">✏️</button></td>
+              </tr>
+              <tr class="user-row" data-role="admin" style="border-bottom:1px solid var(--g50);">
+                <td style="padding:12px 16px;"><div class="flex items-c gap2"><div class="avatar av-sm av-brand">CM</div><div><p class="text-sm font-med text-g800">Carlos Mendes</p><p class="text-xs text-g400">carlos.mendes@fretebras.com.br</p></div></div></td>
+                <td style="padding:12px 16px;font-size:12px;color:var(--g600);">Dir. de Tecnologia</td>
+                <td style="padding:12px 16px;font-size:12px;color:var(--g600);">—</td>
+                <td style="padding:12px 16px;"><span class="role-badge role-admin">Admin</span></td>
+                <td style="padding:12px 16px;"><span class="status-pill pill-active"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);"></span>Ativo</span></td>
+                <td style="padding:12px 16px;text-align:right;"><button class="btn btn-ghost btn-sm" onclick="openUserForm('CM','Carlos Mendes')">✏️</button></td>
+              </tr>
+              <tr class="user-row" data-role="user">
+                <td style="padding:12px 16px;"><div class="flex items-c gap2"><div class="avatar av-sm av-navy">RS</div><div><p class="text-sm font-med text-g800">Renata Souza</p><p class="text-xs text-g400">renata.souza@fretebras.com.br</p></div></div></td>
+                <td style="padding:12px 16px;font-size:12px;color:var(--g600);">Dir. Comercial</td>
+                <td style="padding:12px 16px;font-size:12px;color:var(--g600);">Diego Alves</td>
+                <td style="padding:12px 16px;"><span class="role-badge role-user">Colaborador</span></td>
+                <td style="padding:12px 16px;"><span class="status-pill pill-inactive"><span style="width:6px;height:6px;border-radius:50%;background:var(--g400);"></span>Inativo</span></td>
+                <td style="padding:12px 16px;text-align:right;"><button class="btn btn-ghost btn-sm" onclick="openUserForm('RS','Renata Souza')">✏️</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="text-xs text-g400 text-right p4">4 usuários</p>
+        </div>
+      </div>
+
       <!-- ══════════ NOVIDADES ══════════ -->
       <div id="page-news" class="page max-w">
 
@@ -1447,6 +1829,73 @@
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /main-app -->
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL CADASTRO DE USUÁRIO
+════════════════════════════════════════════════════════ -->
+<div id="user-modal" class="user-modal-overlay" onclick="if(event.target===this)closeUserForm()">
+  <div class="user-modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--g100);">
+      <h2 id="user-modal-title" class="text-base font-bold text-g800">Novo usuário</h2>
+      <button onclick="closeUserForm()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--g400);">✕</button>
+    </div>
+    <div style="padding:20px;" class="space-y6">
+      <div class="form-row">
+        <div class="field" style="margin-bottom:0;"><label>Nome completo *</label><input type="text" id="u-name" placeholder="João da Silva" /></div>
+        <div class="field" style="margin-bottom:0;"><label>E-mail corporativo *</label><input type="email" id="u-email" placeholder="nome@fretebras.com.br" /></div>
+      </div>
+      <div class="form-row mt3">
+        <div class="field" style="margin-bottom:0;">
+          <label>Diretoria</label>
+          <select id="u-dir"><option value="">Selecione...</option>
+            <option>Diretoria de Operações</option><option>Diretoria de Tecnologia</option>
+            <option>Diretoria Comercial</option><option>Diretoria de Logística</option>
+            <option>Diretoria Financeira</option><option>Diretoria de RH</option>
+          </select>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>Área</label>
+          <select id="u-area"><option value="">Selecione...</option>
+            <option>Operações</option><option>Tecnologia</option><option>Comercial</option>
+            <option>Logística</option><option>Financeiro</option><option>RH</option>
+          </select>
+        </div>
+      </div>
+      <div class="field mt3"><label>Nome do gestor direto</label><input type="text" id="u-manager" placeholder="Maria Ferreira" /></div>
+
+      <!-- Perfil -->
+      <div class="field">
+        <label>Perfil de acesso</label>
+        <div class="flex gap2">
+          <button class="type-btn active-mandatory" id="role-user"    onclick="setUserRole('user')"    style="font-size:11px;">👤 Colaborador</button>
+          <button class="type-btn" id="role-manager" onclick="setUserRole('manager')" style="font-size:11px;">👔 Gestor</button>
+          <button class="type-btn" id="role-admin"   onclick="setUserRole('admin')"   style="font-size:11px;">⚙️ Admin</button>
+        </div>
+      </div>
+
+      <!-- Permissões -->
+      <div class="field">
+        <label style="margin-bottom:8px;display:flex;align-items:center;gap:4px;">🔒 Permissões específicas</label>
+        <div class="space-y">
+          <label class="perm-row" id="perm-view_reports"><input type="checkbox" style="accent-color:var(--brand);" /><div><p class="text-xs font-med text-g800">Ver relatórios</p><p style="font-size:10px;color:var(--g400);">Acesso ao dashboard e métricas</p></div></label>
+          <label class="perm-row" id="perm-manage_courses"><input type="checkbox" style="accent-color:var(--brand);" /><div><p class="text-xs font-med text-g800">Gerir cursos</p><p style="font-size:10px;color:var(--g400);">Criar, editar e publicar cursos</p></div></label>
+          <label class="perm-row" id="perm-manage_content"><input type="checkbox" style="accent-color:var(--brand);" /><div><p class="text-xs font-med text-g800">Gerir conteúdo</p><p style="font-size:10px;color:var(--g400);">Editar URLs e mídia dos módulos</p></div></label>
+          <label class="perm-row" id="perm-manage_users"><input type="checkbox" style="accent-color:var(--brand);" /><div><p class="text-xs font-med text-g800">Gerir usuários</p><p style="font-size:10px;color:var(--g400);">Cadastrar e editar colaboradores</p></div></label>
+        </div>
+      </div>
+
+      <!-- Status toggle -->
+      <div class="flex items-c gap3 p3" style="background:var(--g50);border-radius:8px;">
+        <div class="flex-1"><p class="text-xs font-med text-g800">Status da conta</p><p style="font-size:10px;color:var(--g400);">Usuários inativos não conseguem fazer login</p></div>
+        <label class="toggle-switch"><input type="checkbox" id="u-status" checked /><span class="toggle-thumb"></span></label>
+      </div>
+    </div>
+    <div class="flex justify-b p4" style="padding-top:0;">
+      <button class="btn btn-outline btn-md" onclick="closeUserForm()">Cancelar</button>
+      <button class="btn btn-primary btn-md" onclick="submitUser()">✓ Cadastrar usuário</button>
+    </div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════════════════
      MODAL VIEWER DE MÓDULO
@@ -1632,6 +2081,152 @@
       item.style.display = (filter === 'all' || filter === s) ? '' : 'none';
     });
     if (done) done.parentElement.style.display = (filter === 'all' || filter === 'done') ? '' : 'none';
+  }
+
+  // ── Curso: tipo ────────────────────────────────────────────────────────────
+  function setType(btn, type) {
+    document.getElementById('btn-mandatory').className = 'type-btn' + (type==='mandatory' ? ' active-mandatory' : '')
+    document.getElementById('btn-optional').className  = 'type-btn' + (type==='optional'  ? ' active-optional'  : '')
+  }
+
+  // ── Curso: banner ──────────────────────────────────────────────────────────
+  function previewBanner(e) {
+    const file = e.target.files[0]; if(!file) return
+    const reader = new FileReader()
+    reader.onload = function(ev) {
+      document.getElementById('banner-img').src = ev.target.result
+      document.getElementById('banner-preview').style.display = 'block'
+      document.getElementById('banner-placeholder').style.display = 'none'
+    }
+    reader.readAsDataURL(file)
+  }
+  function clearBanner() {
+    document.getElementById('banner-preview').style.display = 'none'
+    document.getElementById('banner-placeholder').style.display = 'block'
+    document.getElementById('banner-file').value = ''
+  }
+  function selectColor(el, color) {
+    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('sel'))
+    el.classList.add('sel')
+    if (!document.getElementById('banner-preview').style.display || document.getElementById('banner-preview').style.display === 'none') {
+      document.getElementById('banner-drop').style.background = color
+    }
+  }
+
+  // ── Curso: XP ──────────────────────────────────────────────────────────────
+  function setXP(v) {
+    document.getElementById('xp-slider').value = v
+    document.getElementById('xp-val').value = v
+  }
+
+  // ── Curso: Tags ────────────────────────────────────────────────────────────
+  const courseTags = []
+  function addTag() {
+    const input = document.getElementById('tag-input')
+    const v = input.value.trim(); if (!v || courseTags.includes(v)) { input.value=''; return }
+    courseTags.push(v)
+    renderTags(); input.value = ''
+  }
+  function removeTag(t) {
+    const i = courseTags.indexOf(t); if(i>-1) courseTags.splice(i,1); renderTags()
+  }
+  function renderTags() {
+    const c = document.getElementById('tags-container')
+    c.innerHTML = courseTags.map(t => `<span class="tag-chip">${t}<button onclick="removeTag('${t}')">✕</button></span>`).join('')
+  }
+
+  // ── Curso: Permissões ──────────────────────────────────────────────────────
+  function togglePerm(btn, role) {
+    const active = btn.classList.contains('btn-primary')
+    btn.className = active ? 'btn btn-outline btn-sm' : 'btn btn-primary btn-sm'
+  }
+  function toggleArea(btn) {
+    const active = btn.classList.contains('btn-primary')
+    btn.className = active ? 'btn btn-outline btn-sm' : 'btn btn-primary btn-sm'
+  }
+
+  // ── Curso: Salvar ──────────────────────────────────────────────────────────
+  function showCourseForm() { showPage('admin-course-new', null) }
+  function saveCourse(status) {
+    const title = document.getElementById('c-title').value.trim()
+    if (!title) { alert('Por favor, informe o nome do curso.'); return }
+    const xp = document.getElementById('xp-val').value
+    const pill = status === 'published'
+      ? '<span class="badge badge-success"><span class="badge-dot" style="background:var(--success);"></span>Publicado</span>'
+      : '<span class="badge badge-gray"><span class="badge-dot" style="background:var(--g400);"></span>Rascunho</span>'
+    const tagsHtml = courseTags.slice(0,3).map(t=>`<span class="tag-chip">${t}</span>`).join('')
+    const li = document.createElement('div')
+    li.className = 'card flex items-c gap4'
+    li.innerHTML = `
+      <div style="width:56px;height:56px;border-radius:8px;background:#0D1B36;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;">${title.charAt(0)}</div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-c gap2 mb1 flex-wrap"><span class="text-sm font-med text-g800">${title}</span>${pill}</div>
+        <div class="flex items-c gap3 flex-wrap text-xs text-g400"><span style="color:var(--brand);font-weight:500;">⚡ ${xp} XP</span>${tagsHtml}</div>
+      </div>
+      <button class="btn btn-outline btn-sm">✏️ Editar</button>`
+    document.getElementById('courses-admin-list').prepend(li)
+    showPage('admin-courses', null)
+  }
+
+  // ── Usuários: modal ────────────────────────────────────────────────────────
+  function openUserForm(initials, name) {
+    document.getElementById('user-modal-title').textContent = name ? 'Editar usuário' : 'Novo usuário'
+    if (name) document.getElementById('u-name').value = name
+    document.getElementById('user-modal').classList.add('open')
+    document.body.style.overflow = 'hidden'
+  }
+  function closeUserForm() {
+    document.getElementById('user-modal').classList.remove('open')
+    document.body.style.overflow = ''
+  }
+  function setUserRole(role) {
+    ['user','manager','admin'].forEach(r => {
+      const btn = document.getElementById('role-'+r)
+      if (r === role) {
+        btn.className = 'type-btn ' + (r==='user'?'active-mandatory':r==='manager'?'active-optional':'')
+        if(r==='admin') { btn.style.background=var(--navy); btn.style.color='#fff'; btn.style.borderColor=var(--navy); }
+      } else {
+        btn.className = 'type-btn'; btn.style.background=''; btn.style.color=''; btn.style.borderColor='';
+      }
+    })
+  }
+  function submitUser() {
+    const name  = document.getElementById('u-name').value.trim()
+    const email = document.getElementById('u-email').value.trim()
+    if (!name || !email) { alert('Nome e e-mail são obrigatórios.'); return }
+    const initials = name.split(' ').map(n=>n[0]).slice(0,2).join('')
+    const dir = document.getElementById('u-dir').value || '—'
+    const mgr = document.getElementById('u-manager').value || '—'
+    const active = document.getElementById('u-status').checked
+    const newRow = document.createElement('tr')
+    newRow.className = 'user-row'; newRow.dataset.role = 'user'
+    newRow.style.borderBottom = '1px solid var(--g50)'
+    newRow.innerHTML = `
+      <td style="padding:12px 16px;"><div class="flex items-c gap2"><div class="avatar av-sm av-navy">${initials}</div><div><p class="text-sm font-med text-g800">${name}</p><p class="text-xs text-g400">${email}</p></div></div></td>
+      <td style="padding:12px 16px;font-size:12px;color:var(--g600);">${dir}</td>
+      <td style="padding:12px 16px;font-size:12px;color:var(--g600);">${mgr}</td>
+      <td style="padding:12px 16px;"><span class="role-badge role-user">Colaborador</span></td>
+      <td style="padding:12px 16px;"><span class="status-pill ${active?'pill-active':'pill-inactive'}"><span style="width:6px;height:6px;border-radius:50%;background:${active?'var(--success)':'var(--g400)'};"></span>${active?'Ativo':'Inativo'}</span></td>
+      <td style="padding:12px 16px;text-align:right;"><button class="btn btn-ghost btn-sm">✏️</button></td>`
+    document.getElementById('users-tbody').prepend(newRow)
+    closeUserForm()
+    document.getElementById('u-name').value = ''
+    document.getElementById('u-email').value = ''
+    document.getElementById('u-dir').value = ''
+    document.getElementById('u-manager').value = ''
+  }
+  function filterUsers(q) {
+    document.querySelectorAll('.user-row').forEach(r => {
+      const text = r.textContent.toLowerCase()
+      r.style.display = (!q || text.includes(q.toLowerCase())) ? '' : 'none'
+    })
+  }
+  function filterUserRole(role, btn) {
+    document.querySelectorAll('#page-admin-users .tab').forEach(t => t.classList.remove('active'))
+    btn.classList.add('active')
+    document.querySelectorAll('.user-row').forEach(r => {
+      r.style.display = (role === 'all' || r.dataset.role === role) ? '' : 'none'
+    })
   }
 
   function filterNews(cat, btn) {

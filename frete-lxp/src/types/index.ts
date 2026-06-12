@@ -100,7 +100,43 @@ export interface LeaderboardEntry {
   isCurrentUser?: boolean
 }
 
-// ── Admin: métricas ──────────────────────────────────────────────────────────
+// ── Admin: usuário gerenciado ──────────────────────────────────────────────────
+export type UserRole       = 'admin' | 'manager' | 'user'
+export type UserPermission = 'view_reports' | 'manage_courses' | 'manage_users' | 'manage_content'
+
+export interface AdminUser {
+  id: string
+  name: string
+  email: string
+  role: UserRole
+  area: string
+  directorship: string
+  managerName: string
+  permissions: UserPermission[]
+  status: 'active' | 'inactive'
+  createdAt: string
+  avatar?: string
+}
+
+// ── Admin: curso gerenciado ────────────────────────────────────────────────────
+export interface AdminCourse {
+  id: string
+  title: string
+  description: string
+  xpReward: number
+  tags: string[]
+  bannerUrl?: string        // base64 ou URL
+  bannerColor: string       // fallback hex
+  permissions: {
+    roles: UserRole[]
+    areas: string[]
+  }
+  type: 'mandatory' | 'optional'
+  status: 'draft' | 'published'
+  createdAt: string
+}
+
+
 export interface AdminMetrics {
   activeCollaborators: number
   completionRate: number   // percentual 0–100
