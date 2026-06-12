@@ -700,7 +700,7 @@
         <div class="divider-or-line"></div>
       </div>
 
-      <button class="sso-btn" onclick="doLogin()">
+      <button class="sso-btn" onclick="doSSO()">
         <svg viewBox="0 0 21 21" width="16" height="16"><rect x="1" y="1" width="9" height="9" fill="#F25022"/><rect x="11" y="1" width="9" height="9" fill="#7FBA00"/><rect x="1" y="11" width="9" height="9" fill="#00A4EF"/><rect x="11" y="11" width="9" height="9" fill="#FFB900"/></svg>
         Entrar com Microsoft SSO
       </button>
@@ -2051,17 +2051,31 @@
     player.innerHTML = ''
   }
 
+  function enterApp() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'flex';
+  }
+
+  function doSSO() {
+    // SSO Microsoft: autenticação delegada, entra direto
+    enterApp();
+  }
+
   function doLogin() {
-    const email = document.getElementById('login-email').value;
+    const email = document.getElementById('login-email').value.trim();
     const errBox = document.getElementById('login-error');
-    if (email && !email.endsWith('@frete.com')) {
+    if (!email) {
+      errBox.style.display = 'block';
+      errBox.textContent = 'Informe seu e-mail corporativo @frete.com';
+      return;
+    }
+    if (!email.endsWith('@frete.com')) {
       errBox.style.display = 'block';
       errBox.textContent = 'Use seu e-mail corporativo @frete.com';
       return;
     }
     errBox.style.display = 'none';
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'flex';
+    enterApp();
   }
 
   function showPage(id, btn) {
