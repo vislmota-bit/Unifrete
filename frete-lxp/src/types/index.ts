@@ -49,6 +49,8 @@ export interface Trail {
   modules: TrailModule[]
 }
 
+export type ContentType = 'video' | 'audio' | 'pdf' | 'doc'
+
 export interface TrailModule {
   id: string
   title: string
@@ -57,6 +59,23 @@ export interface TrailModule {
   status: 'completed' | 'active' | 'locked'
   completedAt?: string
   progress?: number      // 0–100 (só para status active)
+  contentType?: ContentType
+  contentUrl?: string
+  description?: string
+}
+
+// ── Notícia ────────────────────────────────────────────────────────────────────
+export interface News {
+  id: string
+  title: string
+  summary: string
+  category: 'company' | 'market' | 'law' | 'tip'
+  contentType: ContentType
+  contentUrl?: string
+  publishedAt: string   // ISO date
+  readingMinutes: number
+  mandatory?: boolean
+  emoji: string
 }
 
 // ── Conquista ─────────────────────────────────────────────────────────────────

@@ -1,8 +1,17 @@
 import { CheckCircle, Play, Lock, ArrowRight, Clock, Layers } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { clsx } from 'clsx'
 import { Button, Badge, Card, ProgressBar } from '@/components/ui'
 import { useTrailsStore } from '@/store/trailsStore'
+import { useContentStore } from '@/store/contentStore'
 import type { Trail, TrailModule } from '@/types'
+
+const CONTENT_TYPE_LABEL: Record<string, string> = {
+  video: '🎬 Vídeo',
+  audio: '🎧 Áudio',
+  pdf:   '📄 PDF',
+  doc:   '📝 Documento',
+}
 
 // ── Hero da trilha ativa ──────────────────────────────────────────────────────
 function ActiveTrailHero({ trail }: { trail: Trail }) {
@@ -41,9 +50,12 @@ function ActiveTrailHero({ trail }: { trail: Trail }) {
 function ModuleStep({
   module, isLast,
 }: { module: TrailModule; isLast: boolean }) {
-  const isCompleted = module.status === 'completed'
-  const isActive    = module.status === 'active'
-  const isLocked    = module.status === 'locked'
+  const navigate     = useNavigate()
+  const { entries }  = useContentStore()
+  const entry        = entries.find((e) => e.moduleId === module.id)
+  const isCompleted  = module.status === 'completed'
+  const isActive     = module.status === 'active'
+  const isLocked     = module.status === 'locked'
 
   return (
     <div className="flex gap-4">
@@ -89,10 +101,15 @@ function ModuleStep({
               )}>
                 {module.title}
               </p>
-              <div className="flex items-center gap-2 mt-0.5 text-xs text-gray-400">
+              <div className="flex items-center gap-2 mt-0.5 text-xs text-gray-400 flex-wrap">
                 <span className="flex items-center gap-1">
                   <Clock className="w-3 h-3" />{module.duration} min
                 </span>
+                {entry && (
+                  <span className="text-[10px] px-1.5 py-px rounded border bg-gray-50 border-gray-200 text-gray-500">
+                    {CONTENT_TYPE_LABEL[entry.contentType]}
+                  </span>
+                )}
                 <Badge variant={isCompleted ? 'success' : 'gray'} dot>
                   +{module.xpReward} XP
                 </Badge>
@@ -121,12 +138,22 @@ function ModuleStep({
 
           {/* Botão de ação */}
           {isActive && (
-            <Button variant="brand" size="sm" leftIcon={<Play className="w-3.5 h-3.5" />}>
+            <Button
+              variant="brand"
+              size="sm"
+              leftIcon={<Play className="w-3.5 h-3.5" />}
+              onClick={() => navigate(`/module/${module.id}`)}
+            >
               Continuar
             </Button>
           )}
           {isCompleted && (
-            <Button variant="ghost" size="sm" className="text-success hover:bg-success-light">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-success hover:bg-success-light"
+              onClick={() => navigate(`/module/${module.id}`)}
+            >
               <CheckCircle className="w-3.5 h-3.5 mr-1 inline" />
               Concluído — rever conteúdo
             </Button>

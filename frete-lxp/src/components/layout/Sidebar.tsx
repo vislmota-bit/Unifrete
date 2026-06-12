@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import {
   BookOpen, Map, Trophy, ClipboardList,
-  LayoutDashboard, X, Menu,
+  LayoutDashboard, X, Menu, Newspaper, FileVideo,
 } from 'lucide-react'
 import { clsx } from 'clsx'
 import { Avatar } from '@/components/ui'
@@ -16,13 +16,15 @@ const navGroups = [
       { to: '/courses',     icon: BookOpen,       label: 'Cursos',       badge: 0 },
       { to: '/trails',      icon: Map,            label: 'Trilhas',      badge: 0 },
       { to: '/trainings',   icon: ClipboardList,  label: 'Treinamentos', badge: 3 },
-      { to: '/gamification',icon: Trophy,         label: 'Gamificação',  badge: 0 },
+      { to: '/gamification', icon: Trophy,      label: 'Gamificação',  badge: 0 },
+      { to: '/news',         icon: Newspaper,   label: 'Novidades',    badge: 0 },
     ],
   },
   {
     label: 'Gestão',
     items: [
-      { to: '/admin', icon: LayoutDashboard, label: 'Dashboard Admin', badge: 0 },
+      { to: '/admin',         icon: LayoutDashboard, label: 'Dashboard Admin',  badge: 0 },
+      { to: '/admin/content', icon: FileVideo,     label: 'Gestão de Conteúdo', badge: 0 },
     ],
   },
 ]
@@ -39,10 +41,14 @@ export function Sidebar() {
     <aside className="flex flex-col h-full w-48 bg-white border-r border-gray-100">
       {/* Logotipo */}
       <div className="flex items-center gap-2 px-4 h-14 border-b border-gray-100 flex-shrink-0">
-        <div className="w-7 h-7 bg-navy rounded-md flex items-center justify-center">
-          <span className="text-white font-heading font-bold text-xs">FL</span>
-        </div>
-        <span className="font-heading font-bold text-navy text-sm tracking-tight">freteLXP</span>
+        <svg width="26" height="26" viewBox="0 0 38 38" fill="none">
+          <rect width="38" height="38" rx="8" fill="#00AEEF"/>
+          <path d="M8 30 L19 10 L30 30 Z" fill="rgba(255,255,255,.15)"/>
+          <line x1="19" y1="13" x2="19" y2="17" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+          <line x1="19" y1="20" x2="19" y2="24" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M14 26 L19 18 L24 26" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+        </svg>
+        <span className="font-heading font-bold text-navy text-sm tracking-tight">Unifrete</span>
       </div>
 
       {/* Navegação */}
