@@ -315,6 +315,47 @@
   .vl-gray   { background: var(--g100); }
   .trail-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
+  /* ── Tipo de ferramenta ── */
+  .tool-badge {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 2px 7px; border-radius: 5px; font-size: 10px; font-weight: 500;
+    border: 1px solid;
+  }
+  .tool-video  { background:#EFF6FF; border-color:#BFDBFE; color:#1D4ED8; }
+  .tool-pdf    { background:#FEF2F2; border-color:#FECACA; color:#B91C1C; }
+  .tool-audio  { background:#F5F3FF; border-color:#DDD6FE; color:#6D28D9; }
+  .tool-doc    { background:#F0FDF4; border-color:#BBF7D0; color:#15803D; }
+
+  /* ── NOVIDADES ── */
+  .news-hero {
+    background: linear-gradient(135deg, var(--navy) 0%, #0a2a4a 100%);
+    border-radius: 14px; padding: 20px 24px; margin-bottom: 20px;
+    position: relative; overflow: hidden;
+  }
+  .news-hero::after {
+    content: '📰'; position: absolute; right: 20px; top: 50%;
+    transform: translateY(-50%); font-size: 48px; opacity: .15;
+  }
+  .news-card {
+    display: flex; gap: 12px; padding: 14px;
+    border: 1px solid var(--g100); border-radius: 10px; background: #fff;
+    transition: all .15s; cursor: pointer;
+  }
+  .news-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.07); border-color: var(--g200); }
+  .news-thumb {
+    width: 64px; height: 64px; border-radius: 8px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 24px;
+  }
+  .news-category {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .04em;
+  }
+  .cat-company { background: var(--brand-l); color: var(--brand-d); }
+  .cat-market  { background: var(--warn-l);  color: var(--warn); }
+  .cat-law     { background: var(--dang-l);  color: var(--danger); }
+  .cat-tip     { background: var(--succ-l);  color: var(--success); }
+
   /* ── ADMIN ── */
   .admin-topbar {
     display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;
@@ -341,6 +382,34 @@
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: var(--g50); }
 
+  /* ── Animações login ── */
+  @keyframes dashMove {
+    to { stroke-dashoffset: -40; }
+  }
+  @keyframes pulseRing {
+    0%   { r: 4; opacity: .8; }
+    100% { r: 10; opacity: 0; }
+  }
+  @keyframes carMove {
+    0%   { transform: translateX(0) translateY(0); }
+    50%  { transform: translateX(6px) translateY(-3px); }
+    100% { transform: translateX(0) translateY(0); }
+  }
+  .dash-line { animation: dashMove 1.4s linear infinite; }
+  .dash-line2 { animation: dashMove 1.4s linear infinite .35s; }
+  .dash-line3 { animation: dashMove 1.4s linear infinite .7s; }
+  .pulse-ring { animation: pulseRing 1.8s ease-out infinite; }
+  .pulse-ring2 { animation: pulseRing 1.8s ease-out infinite .6s; }
+  .car-anim  { animation: carMove 3s ease-in-out infinite; }
+
+  /* Tooltip de feature no login */
+  .feature-chip {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12);
+    border-radius: 8px; padding: 8px 10px;
+    backdrop-filter: blur(4px);
+  }
+
   /* LOGIN show/hide */
   #login-screen { display: flex; min-height: 100vh; }
   #main-app { display: none; height: 100vh; }
@@ -360,51 +429,102 @@
 ════════════════════════════════════════════════════════ -->
 <div id="login-screen">
   <div class="login-left">
-    <!-- Logo -->
+    <!-- Logo Unifrete -->
     <div class="flex items-c gap2">
-      <div style="width:36px;height:36px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center;">
-        <span style="color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;">FL</span>
-      </div>
-      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:18px;">freteLXP</span>
+      <!-- SVG logo: hexágono + seta de rota -->
+      <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="38" height="38" rx="9" fill="#00AEEF"/>
+        <!-- estrada perspectiva -->
+        <path d="M8 30 L19 10 L30 30 Z" fill="rgba(255,255,255,.12)" stroke="none"/>
+        <!-- faixa central tracejada -->
+        <line x1="19" y1="13" x2="19" y2="17" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="19" y1="20" x2="19" y2="24" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- seta -->
+        <path d="M14 26 L19 18 L24 26" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:18px;letter-spacing:-.3px;">Unifrete</span>
+    </div>
+
+    <!-- SVG rodovia animada -->
+    <div style="margin: 20px -32px; overflow:hidden;">
+      <svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
+        <!-- céu gradiente -->
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#001833"/>
+            <stop offset="100%" stop-color="#0D1B36"/>
+          </linearGradient>
+          <linearGradient id="road" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1a2a40"/>
+            <stop offset="100%" stop-color="#0a1828"/>
+          </linearGradient>
+        </defs>
+        <rect width="280" height="140" fill="url(#sky)"/>
+        <!-- rodovia em perspectiva -->
+        <polygon points="105,55 175,55 260,140 20,140" fill="url(#road)"/>
+        <!-- faixas laterais -->
+        <line x1="105" y1="55" x2="20" y2="140" stroke="#2a3a50" stroke-width="1.5"/>
+        <line x1="175" y1="55" x2="260" y2="140" stroke="#2a3a50" stroke-width="1.5"/>
+        <!-- faixa central tracejada animada -->
+        <line x1="140" y1="58" x2="140" y2="140" stroke="#00AEEF" stroke-width="1.5"
+          stroke-dasharray="8 6" class="dash-line" opacity=".6"/>
+        <!-- faixas laterais tracejadas -->
+        <line x1="120" y1="62" x2="75" y2="140" stroke="rgba(255,255,255,.15)" stroke-width="1"
+          stroke-dasharray="6 8" class="dash-line2"/>
+        <line x1="160" y1="62" x2="205" y2="140" stroke="rgba(255,255,255,.15)" stroke-width="1"
+          stroke-dasharray="6 8" class="dash-line3"/>
+        <!-- carro 1 (animado) -->
+        <g class="car-anim" transform-origin="140 90">
+          <rect x="131" y="87" width="18" height="9" rx="2" fill="#00AEEF" opacity=".9"/>
+          <rect x="133" y="84" width="14" height="6" rx="1.5" fill="#00AEEF" opacity=".7"/>
+          <!-- faróis -->
+          <circle cx="132" cy="91" r="1.5" fill="#FFFAEB" opacity=".9"/>
+          <circle cx="148" cy="91" r="1.5" fill="#FFFAEB" opacity=".9"/>
+        </g>
+        <!-- ping animado no destino -->
+        <circle cx="140" cy="42" r="4" fill="#00AEEF" opacity=".9"/>
+        <circle cx="140" cy="42" fill="none" stroke="#00AEEF" stroke-width="1.2" class="pulse-ring" opacity=".5"/>
+        <circle cx="140" cy="42" fill="none" stroke="#00AEEF" stroke-width="1" class="pulse-ring2" opacity=".3"/>
+        <!-- estrelas de fundo -->
+        <circle cx="30" cy="20" r="1" fill="white" opacity=".3"/>
+        <circle cx="60" cy="10" r=".8" fill="white" opacity=".4"/>
+        <circle cx="220" cy="15" r="1" fill="white" opacity=".3"/>
+        <circle cx="250" cy="30" r=".8" fill="white" opacity=".4"/>
+        <circle cx="80" cy="35" r=".7" fill="white" opacity=".25"/>
+      </svg>
     </div>
 
     <!-- Frase -->
     <div>
-      <h1 style="color:#fff;font-size:26px;font-weight:700;line-height:1.3;margin-bottom:10px;">
+      <h1 style="color:#fff;font-size:22px;font-weight:700;line-height:1.35;margin-bottom:8px;">
         Aprenda no seu ritmo,<br/>cresça no seu caminho.
       </h1>
-      <p style="color:rgba(255,255,255,.5);font-size:13px;line-height:1.6;">
+      <p style="color:rgba(255,255,255,.5);font-size:12px;line-height:1.6;">
         A plataforma de aprendizagem corporativa da Fretebras.
       </p>
     </div>
 
-    <!-- Stats -->
-    <div class="flex col gap3">
-      <div class="stat-row">
-        <div class="stat-icon">
-          <svg width="16" height="16" fill="none" stroke="var(--brand)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        </div>
+    <!-- Feature chips -->
+    <div class="flex col gap2">
+      <div class="feature-chip">
+        <span style="font-size:16px;">🎓</span>
         <div>
-          <p style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:15px;line-height:1;">12k+</p>
-          <p style="color:rgba(255,255,255,.4);font-size:11px;margin-top:2px;">colaboradores</p>
+          <p style="color:#fff;font-size:12px;font-weight:500;line-height:1;">340 cursos disponíveis</p>
+          <p style="color:rgba(255,255,255,.4);font-size:10px;margin-top:1px;">Vídeo, PDF e podcast</p>
         </div>
       </div>
-      <div class="stat-row">
-        <div class="stat-icon">
-          <svg width="16" height="16" fill="none" stroke="var(--brand)" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        </div>
+      <div class="feature-chip">
+        <span style="font-size:16px;">🏆</span>
         <div>
-          <p style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:15px;line-height:1;">340</p>
-          <p style="color:rgba(255,255,255,.4);font-size:11px;margin-top:2px;">cursos disponíveis</p>
+          <p style="color:#fff;font-size:12px;font-weight:500;line-height:1;">Gamificação com XP e ranking</p>
+          <p style="color:rgba(255,255,255,.4);font-size:10px;margin-top:1px;">12k+ colaboradores ativos</p>
         </div>
       </div>
-      <div class="stat-row">
-        <div class="stat-icon">
-          <svg width="16" height="16" fill="none" stroke="var(--brand)" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        </div>
+      <div class="feature-chip">
+        <span style="font-size:16px;">📈</span>
         <div>
-          <p style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:15px;line-height:1;">94%</p>
-          <p style="color:rgba(255,255,255,.4);font-size:11px;margin-top:2px;">taxa de satisfação</p>
+          <p style="color:#fff;font-size:12px;font-weight:500;line-height:1;">94% de satisfação</p>
+          <p style="color:rgba(255,255,255,.4);font-size:10px;margin-top:1px;">Trilhas personalizadas por função</p>
         </div>
       </div>
     </div>
@@ -479,8 +599,14 @@
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sb-logo">
-      <div class="sb-logo-icon">FL</div>
-      <span class="sb-logo-text">freteLXP</span>
+      <svg width="26" height="26" viewBox="0 0 38 38" fill="none">
+        <rect width="38" height="38" rx="9" fill="#00AEEF"/>
+        <path d="M8 30 L19 10 L30 30 Z" fill="rgba(255,255,255,.12)"/>
+        <line x1="19" y1="13" x2="19" y2="17" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="19" y1="20" x2="19" y2="24" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M14 26 L19 18 L24 26" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      <span class="sb-logo-text">Unifrete</span>
     </div>
     <nav class="sb-nav">
       <div class="sb-group-label">Aprendizagem</div>
@@ -500,6 +626,10 @@
       <button class="sb-item" onclick="showPage('gamification',this)">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
         Gamificação
+      </button>
+      <button class="sb-item" onclick="showPage('news',this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2z"/><path d="M16 2v4"/><path d="M8 6h8"/><path d="M8 10h8"/><path d="M8 14h5"/></svg>
+        Novidades
       </button>
       <div class="sb-group-label" style="margin-top:12px;">Gestão</div>
       <button class="sb-item" onclick="showPage('admin',this)">
@@ -893,7 +1023,7 @@
                 <span class="text-sm font-med">Fundamentos da Plataforma</span>
                 <span style="font-size:10px;color:var(--g400);">10/05/2025</span>
               </div>
-              <div class="flex items-c gap2"><span class="text-xs text-g400">⏱ 45 min</span><span class="badge badge-success">+80 XP</span></div>
+              <div class="flex items-c gap2"><span class="text-xs text-g400">⏱ 45 min</span><span class="tool-badge tool-video">🎬 Vídeo</span><span class="badge badge-success">+80 XP</span></div>
               <button class="btn btn-ghost btn-sm mt2" style="color:var(--success);">✓ Concluído — rever</button>
             </div>
           </div>
@@ -908,7 +1038,7 @@
               <div class="flex items-c gap2 mb1">
                 <span class="text-sm font-med">Direção Defensiva Avançada</span>
               </div>
-              <div class="flex items-c gap2 mb2"><span class="text-xs text-g400">⏱ 120 min</span><span class="badge badge-blue">+200 XP</span></div>
+              <div class="flex items-c gap2 mb2"><span class="text-xs text-g400">⏱ 120 min</span><span class="tool-badge tool-pdf">📄 PDF</span><span class="badge badge-blue">+200 XP</span></div>
               <div class="progress-track progress-h15 track-blue mb2"><div class="progress-fill fill-blue" style="width:75%;"></div></div>
               <button class="btn btn-brand btn-sm">▶ Continuar</button>
             </div>
@@ -922,7 +1052,7 @@
             </div>
             <div class="card" style="flex:1;padding:12px;opacity:.6;">
               <p class="text-sm font-med mb1">Manutenção Preventiva</p>
-              <div class="flex items-c gap2 mb1"><span class="text-xs text-g400">⏱ 180 min</span><span class="badge badge-gray">+300 XP</span></div>
+              <div class="flex items-c gap2 mb1"><span class="text-xs text-g400">⏱ 180 min</span><span class="tool-badge tool-video">🎬 Vídeo</span><span class="badge badge-gray">+300 XP</span></div>
               <p class="text-xs text-g400" style="font-style:italic;">🔒 Disponível após concluir o módulo anterior</p>
             </div>
           </div>
@@ -934,7 +1064,7 @@
             </div>
             <div class="card" style="flex:1;padding:12px;opacity:.6;">
               <p class="text-sm font-med mb1">Gestão de Rotas Eficientes</p>
-              <div class="flex items-c gap2 mb1"><span class="text-xs text-g400">⏱ 45 min</span><span class="badge badge-gray">+100 XP</span></div>
+              <div class="flex items-c gap2 mb1"><span class="text-xs text-g400">⏱ 45 min</span><span class="tool-badge tool-audio">🎧 Áudio</span><span class="badge badge-gray">+100 XP</span></div>
               <p class="text-xs text-g400" style="font-style:italic;">🔒 Disponível após concluir o módulo anterior</p>
             </div>
           </div>
@@ -1143,6 +1273,131 @@
         </div>
       </div>
 
+      <!-- ══════════ NOVIDADES ══════════ -->
+      <div id="page-news" class="page max-w">
+
+        <!-- Hero -->
+        <div class="news-hero">
+          <p class="text-xs" style="color:var(--brand);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Fique por dentro</p>
+          <h1 class="text-xl font-bold text-white" style="margin-bottom:4px;">Novidades da Empresa e do Mercado</h1>
+          <p class="text-sm" style="color:rgba(255,255,255,.5);">Atualizações sobre a Fretebras e o setor de logística.</p>
+        </div>
+
+        <!-- Tabs de categoria -->
+        <div class="tabs mb4">
+          <button class="tab active" onclick="filterNews('all',this)">Todas</button>
+          <button class="tab" onclick="filterNews('company',this)">Empresa</button>
+          <button class="tab" onclick="filterNews('market',this)">Mercado</button>
+          <button class="tab" onclick="filterNews('law',this)">Legislação</button>
+        </div>
+
+        <div class="space-y" id="news-list">
+
+          <!-- Notícia empresa -->
+          <div class="news-card" data-cat="company">
+            <div class="news-thumb" style="background:var(--brand-l);">🚀</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-c gap2 mb1">
+                <span class="news-category cat-company">Empresa</span>
+                <span class="text-xs text-g400">10 Jun 2025</span>
+              </div>
+              <p class="text-sm font-semi text-g800 lh-tight mb1">Fretebras lança nova funcionalidade de rastreio em tempo real</p>
+              <p class="text-xs text-g600" style="line-height:1.5;">A plataforma agora permite acompanhamento da carga em tempo real com atualização a cada 30 segundos, melhorando a transparência para embarcadores e motoristas.</p>
+              <div class="flex items-c gap2 mt2">
+                <span class="tool-badge tool-video">🎬 Vídeo</span>
+                <span class="text-xs text-g400">3 min de leitura</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notícia mercado -->
+          <div class="news-card" data-cat="market">
+            <div class="news-thumb" style="background:var(--warn-l);">📦</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-c gap2 mb1">
+                <span class="news-category cat-market">Mercado</span>
+                <span class="text-xs text-g400">8 Jun 2025</span>
+              </div>
+              <p class="text-sm font-semi text-g800 lh-tight mb1">Frete rodoviário cresce 12% no 1º semestre de 2025</p>
+              <p class="text-xs text-g600" style="line-height:1.5;">Levantamento da CNT aponta recuperação do setor após desaceleração em 2024, impulsionada pelo agronegócio e pelo e-commerce.</p>
+              <div class="flex items-c gap2 mt2">
+                <span class="tool-badge tool-pdf">📄 PDF</span>
+                <span class="text-xs text-g400">5 min de leitura</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notícia legislação -->
+          <div class="news-card" data-cat="law">
+            <div class="news-thumb" style="background:var(--dang-l);">⚖️</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-c gap2 mb1">
+                <span class="news-category cat-law">Legislação</span>
+                <span class="text-xs text-g400">5 Jun 2025</span>
+              </div>
+              <p class="text-sm font-semi text-g800 lh-tight mb1">ANTT publica nova resolução sobre jornada de trabalho do motorista</p>
+              <p class="text-xs text-g600" style="line-height:1.5;">Resolução nº 6.012/2025 atualiza regras sobre tempo de direção, descanso obrigatório e registros eletrônicos. Motoristas devem se adequar até agosto.</p>
+              <div class="flex items-c gap2 mt2">
+                <span class="tool-badge tool-doc">📝 Documento</span>
+                <span class="text-xs text-g400 text-danger" style="color:var(--danger);font-weight:500;">⚠️ Leitura obrigatória</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notícia empresa -->
+          <div class="news-card" data-cat="company">
+            <div class="news-thumb" style="background:var(--succ-l);">🏆</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-c gap2 mb1">
+                <span class="news-category cat-company">Empresa</span>
+                <span class="text-xs text-g400">2 Jun 2025</span>
+              </div>
+              <p class="text-sm font-semi text-g800 lh-tight mb1">Fretebras é eleita uma das melhores empresas para trabalhar em 2025</p>
+              <p class="text-xs text-g600" style="line-height:1.5;">Reconhecimento no ranking Great Place To Work na categoria de empresas de tecnologia e logística com mais de 1.000 colaboradores.</p>
+              <div class="flex items-c gap2 mt2">
+                <span class="tool-badge tool-video">🎬 Vídeo</span>
+                <span class="text-xs text-g400">2 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notícia mercado -->
+          <div class="news-card" data-cat="market">
+            <div class="news-thumb" style="background:#F5F3FF;">🤖</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-c gap2 mb1">
+                <span class="news-category cat-market">Mercado</span>
+                <span class="text-xs text-g400">28 Mai 2025</span>
+              </div>
+              <p class="text-sm font-semi text-g800 lh-tight mb1">IA na logística: como as transportadoras estão usando automação em 2025</p>
+              <p class="text-xs text-g600" style="line-height:1.5;">Podcast com especialistas do setor discute roteirização inteligente, previsão de demanda e chatbots no atendimento ao motorista.</p>
+              <div class="flex items-c gap2 mt2">
+                <span class="tool-badge tool-audio">🎧 Áudio</span>
+                <span class="text-xs text-g400">18 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notícia legislação -->
+          <div class="news-card" data-cat="law">
+            <div class="news-thumb" style="background:var(--dang-l);">🛣️</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-c gap2 mb1">
+                <span class="news-category cat-law">Legislação</span>
+                <span class="text-xs text-g400">20 Mai 2025</span>
+              </div>
+              <p class="text-sm font-semi text-g800 lh-tight mb1">Novo código de trânsito: mudanças que impactam motoristas profissionais</p>
+              <p class="text-xs text-g600" style="line-height:1.5;">Alterações nas pontuações de infração, multas para uso de celular ao volante e novas regras para habilitação categoria E entram em vigor em julho.</p>
+              <div class="flex items-c gap2 mt2">
+                <span class="tool-badge tool-pdf">📄 PDF</span>
+                <span class="text-xs text-g400 text-danger" style="color:var(--danger);font-weight:500;">⚠️ Leitura obrigatória</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /main-app -->
@@ -1178,6 +1433,15 @@
       item.style.display = (filter === 'all' || filter === s) ? '' : 'none';
     });
     if (done) done.parentElement.style.display = (filter === 'all' || filter === 'done') ? '' : 'none';
+  }
+
+  function filterNews(cat, btn) {
+    document.querySelectorAll('#news-list .tab, .tabs .tab').forEach(t => {});
+    document.querySelectorAll('#page-news .tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#news-list .news-card').forEach(card => {
+      card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+    });
   }
 
   // Permite entrar com Enter
