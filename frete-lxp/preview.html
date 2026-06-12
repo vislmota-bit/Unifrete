@@ -1430,7 +1430,7 @@
                 <span class="tag-chip">Segurança</span><span class="tag-chip">Motorista</span>
               </div>
             </div>
-            <button class="btn btn-outline btn-sm" onclick="showCourseForm({title:'Direção Defensiva Avançada',desc:'Técnicas de condução segura para motoristas.',xp:200,tags:['Segurança','Motorista'],contentType:'video',contentUrl:'https://www.youtube.com/watch?v=jNQXAC9IVRw'})">✏️ Editar</button>
+            <button class="btn btn-outline btn-sm" onclick="showCourseForm({title:'Direção Defensiva Avançada',desc:'Técnicas de condução segura para motoristas.',xp:200,tags:['Segurança','Motorista'],modules:[{title:'Introdução à condução defensiva',desc:'Conceitos básicos e importância.',type:'video',url:'https://www.youtube.com/watch?v=jNQXAC9IVRw'},{title:'Técnicas de frenagem e curvas',desc:'Manobras seguras em diferentes condições.',type:'video',url:''},{title:'Legislação de trânsito',desc:'Normas aplicáveis a veículos pesados.',type:'pdf',url:''}]})">✏️ Editar</button>
           </div>
           <!-- Curso 2 -->
           <div class="card flex items-c gap4">
@@ -1446,7 +1446,7 @@
                 <span class="tag-chip">Compliance</span><span class="tag-chip">Regulação</span>
               </div>
             </div>
-            <button class="btn btn-outline btn-sm" onclick="showCourseForm({title:'Regulamentação ANTT 2025',desc:'Normas vigentes da ANTT para transporte rodoviário.',xp:150,tags:['Compliance','Regulação'],contentType:'pdf',contentUrl:'https://www.africau.edu/images/default/sample.pdf'})">✏️ Editar</button>
+            <button class="btn btn-outline btn-sm" onclick="showCourseForm({title:'Regulamentação ANTT 2025',desc:'Normas vigentes da ANTT para transporte rodoviário.',xp:150,tags:['Compliance','Regulação'],modules:[{title:'Normas ANTT vigentes',desc:'Resolução 5.867 e atualizações.',type:'pdf',url:'https://www.africau.edu/images/default/sample.pdf'},{title:'Documentação obrigatória',desc:'CIOT, MDF-e e outros documentos.',type:'pdf',url:''}]})">✏️ Editar</button>
           </div>
           <!-- Curso 3 rascunho -->
           <div class="card flex items-c gap4">
@@ -1462,38 +1462,36 @@
                 <span class="tag-chip">Tecnologia</span>
               </div>
             </div>
-            <button class="btn btn-outline btn-sm" onclick="showCourseForm({title:'Excel para Gestão de Rotas',desc:'Planilhas avançadas para controle de rotas e fretes.',xp:250,tags:['Tecnologia'],contentType:'video',contentUrl:''})">✏️ Editar</button>
+            <button class="btn btn-outline btn-sm" onclick="showCourseForm({title:'Excel para Gestão de Rotas',desc:'Planilhas avançadas para controle de rotas e fretes.',xp:250,tags:['Tecnologia'],modules:[]})">✏️ Editar</button>
           </div>
         </div>
       </div>
 
-      <!-- ══════════ ADMIN NOVO CURSO ══════════ -->
+      <!-- ══════════ ADMIN NOVO/EDITAR CURSO ══════════ -->
       <div id="page-admin-course-new" class="page">
         <div class="flex items-c gap2 mb4">
           <button onclick="showPage('admin-courses', null)" class="btn btn-ghost btn-sm">← Voltar</button>
         </div>
         <div class="flex items-c justify-b mb5">
           <div>
-            <h1 class="text-2xl font-bold text-g800">Novo curso</h1>
-            <p class="text-sm text-g400 mt1">Preencha os dados para criar o curso.</p>
+            <h1 class="text-2xl font-bold text-g800" id="course-form-title">Novo curso</h1>
+            <p class="text-sm text-g400 mt1">Preencha os dados e adicione os módulos do curso.</p>
           </div>
         </div>
 
         <!-- 1. Dados básicos -->
         <div class="form-section">
           <div class="form-section-head">
-            <div class="form-section-icon">
-              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-            </div>
+            <div class="form-section-icon">📋</div>
             <span class="text-sm font-semi text-g800">Dados básicos</span>
           </div>
           <div class="field"><label>Nome do curso *</label><input type="text" id="c-title" placeholder="Ex: Direção Defensiva Avançada" /></div>
-          <div class="field"><label>Descrição</label><textarea id="c-desc" rows="3" placeholder="Descreva o objetivo e o conteúdo..."></textarea></div>
+          <div class="field"><label>Descrição</label><textarea id="c-desc" rows="3" placeholder="Descreva o objetivo e o público-alvo do curso..."></textarea></div>
           <div class="field">
             <label>Tipo</label>
             <div class="type-toggle">
               <button class="type-btn active-mandatory" onclick="setType(this,'mandatory')" id="btn-mandatory">⚠️ Obrigatório</button>
-              <button class="type-btn" onclick="setType(this,'optional')"  id="btn-optional" >✨ Opcional</button>
+              <button class="type-btn" onclick="setType(this,'optional')" id="btn-optional">✨ Opcional</button>
             </div>
           </div>
         </div>
@@ -1536,7 +1534,7 @@
             <span class="text-sm font-semi text-g800">Pontuação XP</span>
           </div>
           <div class="field">
-            <label>XP concedido ao concluir</label>
+            <label>XP total concedido ao concluir todos os módulos</label>
             <div class="flex items-c gap3">
               <input type="range" class="xp-slider flex-1" min="10" max="500" step="10" value="100" id="xp-slider" oninput="document.getElementById('xp-val').value=this.value" />
               <div class="flex items-c gap1" style="border:1px solid var(--g200);border-radius:8px;padding:4px 10px;">
@@ -1555,30 +1553,63 @@
           </div>
         </div>
 
-        <!-- 4. Conteúdo principal -->
+        <!-- 4. MÓDULOS ── seção central ─────────────────────── -->
         <div class="form-section">
-          <div class="form-section-head">
-            <div class="form-section-icon">🎬</div>
-            <span class="text-sm font-semi text-g800">Conteúdo principal</span>
+          <div class="form-section-head" style="margin-bottom:0;">
+            <div class="form-section-icon">📚</div>
+            <span class="text-sm font-semi text-g800 flex-1">Módulos do curso</span>
+            <span class="text-xs text-g400" id="module-count-label">0 módulos</span>
           </div>
-          <p class="text-xs text-g400 mb3">Cole o link do vídeo, PDF, áudio ou documento que os alunos vão acessar neste curso.</p>
-          <div class="field">
-            <label>Tipo de conteúdo</label>
-            <div class="flex gap2 flex-wrap" id="content-type-btns">
-              <button class="type-btn active-optional" id="ctype-video"  onclick="setCourseContentType('video')">🎬 Vídeo (YouTube)</button>
-              <button class="type-btn"                 id="ctype-audio"  onclick="setCourseContentType('audio')">🎧 Áudio / Podcast</button>
-              <button class="type-btn"                 id="ctype-pdf"    onclick="setCourseContentType('pdf')">📄 PDF</button>
-              <button class="type-btn"                 id="ctype-doc"    onclick="setCourseContentType('doc')">📝 Documento (Google Docs)</button>
+          <p class="text-xs text-g400" style="margin:6px 0 16px;">Cada módulo é uma unidade de conteúdo que o aluno consome em sequência.</p>
+
+          <!-- Lista de módulos adicionados -->
+          <div id="modules-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
+
+          <!-- Empty state -->
+          <div id="modules-empty" style="border:2px dashed var(--g100);border-radius:10px;padding:28px;text-align:center;color:var(--g400);">
+            <div style="font-size:28px;margin-bottom:6px;">📦</div>
+            <p class="text-sm">Nenhum módulo adicionado ainda</p>
+            <p class="text-xs mt1">Clique em "+ Adicionar módulo" para começar</p>
+          </div>
+
+          <!-- Formulário inline para novo/editar módulo -->
+          <div id="module-form-inline" style="display:none;border:1.5px solid var(--brand);border-radius:12px;padding:16px;margin-top:8px;background:var(--g50);">
+            <p class="text-sm font-semi text-g800 mb3" id="module-form-label">Novo módulo</p>
+            <div class="field" style="margin-bottom:10px;">
+              <label>Título do módulo *</label>
+              <input type="text" id="mod-title-input" placeholder="Ex: Introdução à condução defensiva" />
             </div>
-            <input type="hidden" id="c-content-type" value="video" />
+            <div class="field" style="margin-bottom:10px;">
+              <label>Descrição breve <span class="text-g400" style="font-weight:400;">(opcional)</span></label>
+              <input type="text" id="mod-desc-input" placeholder="O que o aluno vai aprender neste módulo..." />
+            </div>
+            <div class="field" style="margin-bottom:10px;">
+              <label>Tipo de conteúdo</label>
+              <div class="flex gap2 flex-wrap" id="mod-type-btns">
+                <button class="type-btn active-optional" id="mtype-video" onclick="setModuleType('video')">🎬 Vídeo</button>
+                <button class="type-btn" id="mtype-audio" onclick="setModuleType('audio')">🎧 Áudio</button>
+                <button class="type-btn" id="mtype-pdf"   onclick="setModuleType('pdf')">📄 PDF</button>
+                <button class="type-btn" id="mtype-doc"   onclick="setModuleType('doc')">📝 Documento</button>
+              </div>
+              <input type="hidden" id="mod-type-val" value="video" />
+            </div>
+            <div class="field" style="margin-bottom:10px;">
+              <label>URL do conteúdo</label>
+              <input type="url" id="mod-url-input" placeholder="Cole o link..." oninput="previewModuleContent()" />
+              <p class="text-xs text-g400 mt1" id="mod-url-hint">Ex: https://www.youtube.com/watch?v=...</p>
+            </div>
+            <!-- preview miniatura -->
+            <div id="mod-url-preview" style="display:none;margin-bottom:10px;border-radius:8px;overflow:hidden;border:1px solid var(--g100);max-height:220px;"></div>
+            <input type="hidden" id="mod-editing-idx" value="-1" />
+            <div class="flex gap2 justify-end">
+              <button class="btn btn-outline btn-sm" onclick="cancelModuleForm()">Cancelar</button>
+              <button class="btn btn-primary btn-sm" onclick="saveModuleInline()">✓ Confirmar módulo</button>
+            </div>
           </div>
-          <div class="field">
-            <label>URL do conteúdo *</label>
-            <input type="url" id="c-content-url" placeholder="Cole o link aqui..." oninput="previewCourseContent()" />
-            <p class="text-xs text-g400 mt1" id="c-content-hint">Ex: https://www.youtube.com/watch?v=... ou https://youtu.be/...</p>
-          </div>
-          <!-- preview inline -->
-          <div id="c-content-preview" style="display:none;margin-top:8px;border-radius:10px;overflow:hidden;border:1px solid var(--g100);"></div>
+
+          <button class="btn btn-outline btn-md" style="width:100%;margin-top:12px;border-style:dashed;" onclick="openModuleForm(-1)">
+            + Adicionar módulo
+          </button>
         </div>
 
         <!-- 5. Tags -->
@@ -1596,7 +1627,7 @@
           <p class="text-xs text-g400 mt1">Sugestões: Segurança · Compliance · Motorista · Tecnologia</p>
         </div>
 
-        <!-- 5. Permissões -->
+        <!-- 6. Permissões -->
         <div class="form-section">
           <div class="form-section-head">
             <div class="form-section-icon">🔒</div>
@@ -2123,46 +2154,78 @@
     if (done) done.parentElement.style.display = (filter === 'all' || filter === 'done') ? '' : 'none';
   }
 
-  // ── Curso: tipo de conteúdo ────────────────────────────────────────────────
-  function setCourseContentType(type) {
-    document.getElementById('c-content-type').value = type
-    const hints = {
-      video: 'Ex: https://www.youtube.com/watch?v=... ou https://youtu.be/...',
-      audio: 'Ex: https://exemplo.com/audio.mp3 ou link de podcast',
-      pdf:   'Ex: https://exemplo.com/documento.pdf',
-      doc:   'Ex: https://docs.google.com/document/d/... (deve ser público)',
-    }
-    ;['video','audio','pdf','doc'].forEach(t => {
-      const b = document.getElementById('ctype-'+t)
-      b.className = 'type-btn' + (t === type ? ' active-optional' : '')
-    })
-    document.getElementById('c-content-hint').textContent = hints[type]
-    document.getElementById('c-content-url').value = ''
-    document.getElementById('c-content-preview').style.display = 'none'
+  // ── Módulos do curso ────────────────────────────────────────────────────────
+  let courseModules = []
+
+  const MOD_HINTS = {
+    video: 'Ex: https://www.youtube.com/watch?v=... ou https://youtu.be/...',
+    audio: 'Ex: https://exemplo.com/audio.mp3',
+    pdf:   'Ex: https://exemplo.com/documento.pdf',
+    doc:   'Ex: https://docs.google.com/document/d/...',
+  }
+  const MOD_LABELS = { video:'🎬 Vídeo', audio:'🎧 Áudio', pdf:'📄 PDF', doc:'📝 Documento' }
+
+  function renderModules() {
+    const list  = document.getElementById('modules-list')
+    const empty = document.getElementById('modules-empty')
+    const count = document.getElementById('module-count-label')
+    count.textContent = courseModules.length + ' módulo' + (courseModules.length !== 1 ? 's' : '')
+    empty.style.display = courseModules.length === 0 ? '' : 'none'
+    list.innerHTML = courseModules.map((m, i) => `
+      <div style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--g100);border-radius:10px;padding:10px 14px;">
+        <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0;">
+          <button onclick="moveModule(${i},-1)" style="background:none;border:none;cursor:pointer;color:var(--g300);font-size:10px;line-height:1;padding:1px;" ${i===0?'disabled style="opacity:.3;cursor:default;"':''}>▲</button>
+          <button onclick="moveModule(${i},1)"  style="background:none;border:none;cursor:pointer;color:var(--g300);font-size:10px;line-height:1;padding:1px;" ${i===courseModules.length-1?'disabled style="opacity:.3;cursor:default;"':''}>▼</button>
+        </div>
+        <div style="width:28px;height:28px;border-radius:6px;background:var(--brand-light);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;color:var(--brand-d);flex-shrink:0;">${i+1}</div>
+        <div style="flex:1;min-width:0;">
+          <p class="text-sm font-med text-g800 truncate">${m.title}</p>
+          <p class="text-xs text-g400 truncate">${MOD_LABELS[m.type]}${m.url ? ' · ' + m.url.substring(0,45)+'…' : ' · sem URL'}</p>
+        </div>
+        <button onclick="openModuleForm(${i})" style="background:none;border:1px solid var(--g200);border-radius:6px;padding:4px 8px;font-size:11px;color:var(--g600);cursor:pointer;">✏️</button>
+        <button onclick="removeModule(${i})"   style="background:none;border:none;cursor:pointer;color:var(--g300);font-size:16px;line-height:1;padding:2px;">✕</button>
+      </div>`).join('')
   }
 
-  function updateContentHint() {
-    const type = document.getElementById('c-content-type').value || 'video'
-    const hints = {
-      video: 'Ex: https://www.youtube.com/watch?v=... ou https://youtu.be/...',
-      audio: 'Ex: https://exemplo.com/audio.mp3 ou link de podcast',
-      pdf:   'Ex: https://exemplo.com/documento.pdf',
-      doc:   'Ex: https://docs.google.com/document/d/... (deve ser público)',
+  function openModuleForm(idx) {
+    const form = document.getElementById('module-form-inline')
+    document.getElementById('module-form-label').textContent = idx === -1 ? 'Novo módulo' : 'Editar módulo'
+    document.getElementById('mod-editing-idx').value = idx
+    if (idx >= 0) {
+      const m = courseModules[idx]
+      document.getElementById('mod-title-input').value = m.title
+      document.getElementById('mod-desc-input').value  = m.desc || ''
+      document.getElementById('mod-url-input').value   = m.url  || ''
+      setModuleType(m.type)
+    } else {
+      document.getElementById('mod-title-input').value = ''
+      document.getElementById('mod-desc-input').value  = ''
+      document.getElementById('mod-url-input').value   = ''
+      setModuleType('video')
     }
-    ;['video','audio','pdf','doc'].forEach(t => {
-      const b = document.getElementById('ctype-'+t)
-      if (b) b.className = 'type-btn' + (t === type ? ' active-optional' : '')
-    })
-    const hint = document.getElementById('c-content-hint')
-    if (hint) hint.textContent = hints[type]
+    document.getElementById('mod-url-preview').style.display = 'none'
+    form.style.display = 'block'
+    document.getElementById('mod-title-input').focus()
   }
 
-  function previewCourseContent() {
-    const type = document.getElementById('c-content-type').value
-    const url  = document.getElementById('c-content-url').value.trim()
-    const box  = document.getElementById('c-content-preview')
+  function cancelModuleForm() {
+    document.getElementById('module-form-inline').style.display = 'none'
+  }
+
+  function setModuleType(type) {
+    document.getElementById('mod-type-val').value = type
+    ;['video','audio','pdf','doc'].forEach(t => {
+      document.getElementById('mtype-'+t).className = 'type-btn' + (t===type ? ' active-optional' : '')
+    })
+    document.getElementById('mod-url-hint').textContent = MOD_HINTS[type]
+    document.getElementById('mod-url-preview').style.display = 'none'
+  }
+
+  function previewModuleContent() {
+    const type = document.getElementById('mod-type-val').value
+    const url  = document.getElementById('mod-url-input').value.trim()
+    const box  = document.getElementById('mod-url-preview')
     if (!url) { box.style.display = 'none'; return }
-
     if (type === 'video') {
       const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{11})/)
       if (!m) { box.style.display = 'none'; return }
@@ -2170,16 +2233,45 @@
       box.innerHTML = `<div style="position:relative;padding-bottom:56.25%;height:0;"><iframe src="https://www.youtube.com/embed/${m[1]}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen></iframe></div>`
     } else if (type === 'audio') {
       box.style.display = 'block'
-      box.innerHTML = `<div style="background:linear-gradient(135deg,#6D28D9,#4C1D95);padding:20px 16px;border-radius:10px;"><p style="color:#fff;font-size:12px;margin-bottom:8px;">🎧 Pré-escuta</p><audio controls style="width:100%;accent-color:#A78BFA;"><source src="${url}"/></audio></div>`
+      box.innerHTML = `<div style="background:linear-gradient(135deg,#6D28D9,#4C1D95);padding:16px;border-radius:8px;"><audio controls style="width:100%;"><source src="${url}"/></audio></div>`
     } else if (type === 'pdf') {
-      let embed = url.includes('drive.google.com') ? url.replace('/view','/preview').replace('/edit','/preview') : `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`
+      const embed = url.includes('drive.google.com') ? url.replace('/view','/preview') : `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`
       box.style.display = 'block'
-      box.innerHTML = `<iframe src="${embed}" style="width:100%;height:380px;border:none;"></iframe>`
-    } else if (type === 'doc') {
-      let embed = url.includes('docs.google.com') ? url.replace('/edit','').replace(/\/[^/]*$/,'/preview') : `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`
+      box.innerHTML = `<iframe src="${embed}" style="width:100%;height:200px;border:none;"></iframe>`
+    } else {
+      const embed = url.includes('docs.google.com') ? url.replace(/\/edit.*$/,'/preview') : `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`
       box.style.display = 'block'
-      box.innerHTML = `<iframe src="${embed}" style="width:100%;height:380px;border:none;"></iframe>`
+      box.innerHTML = `<iframe src="${embed}" style="width:100%;height:200px;border:none;"></iframe>`
     }
+  }
+
+  function saveModuleInline() {
+    const title = document.getElementById('mod-title-input').value.trim()
+    if (!title) { document.getElementById('mod-title-input').style.borderColor='var(--danger)'; return }
+    document.getElementById('mod-title-input').style.borderColor=''
+    const mod = {
+      title,
+      desc: document.getElementById('mod-desc-input').value.trim(),
+      type: document.getElementById('mod-type-val').value,
+      url:  document.getElementById('mod-url-input').value.trim(),
+    }
+    const idx = parseInt(document.getElementById('mod-editing-idx').value)
+    if (idx >= 0) courseModules[idx] = mod
+    else courseModules.push(mod)
+    renderModules()
+    cancelModuleForm()
+  }
+
+  function removeModule(idx) {
+    courseModules.splice(idx, 1)
+    renderModules()
+  }
+
+  function moveModule(idx, dir) {
+    const to = idx + dir
+    if (to < 0 || to >= courseModules.length) return
+    ;[courseModules[idx], courseModules[to]] = [courseModules[to], courseModules[idx]]
+    renderModules()
   }
 
   // ── Curso: tipo (obrigatório/opcional) ────────────────────────────────────
@@ -2246,49 +2338,42 @@
 
   // ── Curso: form ───────────────────────────────────────────────────────────
   function showCourseForm(data) {
-    // Reset fields
-    document.getElementById('c-title').value = data ? data.title : ''
-    document.getElementById('c-desc').value  = data ? data.desc  : ''
-    document.getElementById('xp-val').value  = data ? data.xp    : 100
-    document.getElementById('xp-slider').value = data ? data.xp  : 100
-    document.getElementById('c-content-type').value = data ? (data.contentType || 'video') : 'video'
-    document.getElementById('c-content-url').value  = data ? (data.contentUrl  || '')      : ''
-    updateContentHint()
+    document.getElementById('c-title').value      = data ? data.title : ''
+    document.getElementById('c-desc').value       = data ? (data.desc || '') : ''
+    document.getElementById('xp-val').value       = data ? data.xp : 100
+    document.getElementById('xp-slider').value    = data ? data.xp : 100
     courseTags = data ? (data.tags || []) : []
     renderTags()
     clearBanner()
-    document.querySelector('#page-admin-course-new h1').textContent = data ? 'Editar curso' : 'Novo curso'
+    cancelModuleForm()
+    courseModules = data ? (data.modules ? JSON.parse(JSON.stringify(data.modules)) : []) : []
+    renderModules()
+    document.getElementById('course-form-title').textContent = data ? 'Editar curso' : 'Novo curso'
     showPage('admin-course-new', null)
   }
+
   function saveCourse(status) {
     const title = document.getElementById('c-title').value.trim()
-    if (!title) { alert('Por favor, informe o nome do curso.'); return }
-    const xp = document.getElementById('xp-val').value
+    if (!title) { document.getElementById('c-title').style.borderColor='var(--danger)'; document.getElementById('c-title').focus(); return }
+    document.getElementById('c-title').style.borderColor = ''
+    const xp   = document.getElementById('xp-val').value
+    const desc = document.getElementById('c-desc').value.trim()
     const pill = status === 'published'
-      ? '<span class="badge badge-success"><span class="badge-dot" style="background:var(--success);"></span>Publicado</span>'
-      : '<span class="badge badge-gray"><span class="badge-dot" style="background:var(--g400);"></span>Rascunho</span>'
+      ? '<span class="badge badge-success"><span class="badge-dot" style="background:#12B76A;"></span>Publicado</span>'
+      : '<span class="badge badge-gray"><span class="badge-dot" style="background:#98A2B3;"></span>Rascunho</span>'
     const tagsHtml = courseTags.slice(0,3).map(t=>`<span class="tag-chip">${t}</span>`).join('')
+    const modCount = courseModules.length
+    const modHtml  = modCount > 0 ? `<span style="font-size:10px;color:var(--g400);">📚 ${modCount} módulo${modCount!==1?'s':''}</span>` : ''
+    const courseData = { title, desc, xp, tags: [...courseTags], modules: JSON.parse(JSON.stringify(courseModules)) }
     const li = document.createElement('div')
     li.className = 'card flex items-c gap4'
     li.innerHTML = `
       <div style="width:56px;height:56px;border-radius:8px;background:#0D1B36;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;">${title.charAt(0)}</div>
       <div class="flex-1 min-w-0">
         <div class="flex items-c gap2 mb1 flex-wrap"><span class="text-sm font-med text-g800">${title}</span>${pill}</div>
-        <div class="flex items-c gap3 flex-wrap text-xs text-g400"><span style="color:var(--brand);font-weight:500;">⚡ ${xp} XP</span>${tagsHtml}</div>
+        <div class="flex items-c gap3 flex-wrap text-xs" style="color:#98A2B3;"><span style="color:#00AEEF;font-weight:500;">⚡ ${xp} XP</span>${tagsHtml}${modHtml}</div>
       </div>
-      <button class="btn btn-outline btn-sm">✏️ Editar</button>`
-    const contentType = document.getElementById('c-content-type').value
-    const contentUrl  = document.getElementById('c-content-url').value.trim()
-    const ctLabel = {video:'🎬 Vídeo',audio:'🎧 Áudio',pdf:'📄 PDF',doc:'📝 Doc'}[contentType] || ''
-    const ctHtml = contentUrl ? `<span style="font-size:10px;color:var(--g400);">${ctLabel}</span>` : ''
-    const courseData = {title, desc: document.getElementById('c-desc').value.trim(), xp, tags: [...courseTags], contentType, contentUrl}
-    li.innerHTML = `
-      <div style="width:56px;height:56px;border-radius:8px;background:#0D1B36;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;">${title.charAt(0)}</div>
-      <div class="flex-1 min-w-0">
-        <div class="flex items-c gap2 mb1 flex-wrap"><span class="text-sm font-med text-g800">${title}</span>${pill}</div>
-        <div class="flex items-c gap3 flex-wrap text-xs text-g400"><span style="color:var(--brand);font-weight:500;">⚡ ${xp} XP</span>${tagsHtml}${ctHtml}</div>
-      </div>
-      <button class="btn btn-outline btn-sm" onclick='showCourseForm(${JSON.stringify(courseData)})'>✏️ Editar</button>`
+      <button class="btn btn-outline btn-sm" onclick='showCourseForm(${JSON.stringify(courseData).replace(/'/g,"&#39;")})'>✏️ Editar</button>`
     document.getElementById('courses-admin-list').prepend(li)
     showPage('admin-courses', null)
   }
