@@ -300,6 +300,51 @@
   .training-item.soon { background: var(--warn-l); border-color: rgba(247,144,9,.2); }
   .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
+  /* ── Modal viewer ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: rgba(13,27,54,.55); align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: #fff; border-radius: 16px; width: 100%; max-width: 780px;
+    max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,.2);
+  }
+  .modal-header {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 20px 20px 16px; border-bottom: 1px solid var(--g100);
+  }
+  .modal-body { padding: 20px; }
+  .media-wrap { border-radius: 10px; overflow: hidden; background: #000; }
+  .media-wrap iframe, .media-wrap video {
+    width: 100%; aspect-ratio: 16/9; border: none; display: block;
+  }
+  .audio-wrap {
+    border-radius: 10px; background: linear-gradient(135deg,#F5F3FF,var(--brand-l));
+    border: 1px solid rgba(0,174,239,.2); padding: 32px 20px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+  }
+  .audio-icon { width: 64px; height: 64px; border-radius: 50%; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.1); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+  .pdf-wrap { border-radius: 10px; overflow: hidden; border: 1px solid var(--g100); display: flex; flex-direction: column; }
+  .pdf-toolbar { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: var(--g50); border-bottom: 1px solid var(--g100); }
+  .pdf-wrap iframe { width: 100%; height: 480px; border: none; }
+  .module-sidebar { display: flex; flex-direction: column; gap: 8px; }
+  .mod-row {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+    border: 1px solid var(--g100); border-radius: 8px; cursor: pointer;
+    background: #fff; transition: all .15s; text-align: left; width: 100%;
+  }
+  .mod-row.active { border-color: rgba(0,174,239,.3); background: var(--brand-l); }
+  .mod-row.locked { opacity: .5; cursor: not-allowed; }
+  .mod-row:not(.locked):hover { box-shadow: 0 2px 6px rgba(0,0,0,.06); }
+  .mod-circle {
+    width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 11px; border: 2px solid;
+  }
+  .mc2-done   { background: var(--success); border-color: var(--success); color: #fff; }
+  .mc2-active { background: var(--brand);   border-color: var(--brand);   color: #fff; }
+  .mc2-locked { background: #fff;           border-color: var(--g200);    color: var(--g400); }
+
   /* ── TRILHAS ── */
   .module-line { display: flex; gap: 16px; }
   .module-timeline { display: flex; flex-direction: column; align-items: center; }
@@ -1024,7 +1069,7 @@
                 <span style="font-size:10px;color:var(--g400);">10/05/2025</span>
               </div>
               <div class="flex items-c gap2"><span class="text-xs text-g400">⏱ 45 min</span><span class="tool-badge tool-video">🎬 Vídeo</span><span class="badge badge-success">+80 XP</span></div>
-              <button class="btn btn-ghost btn-sm mt2" style="color:var(--success);">✓ Concluído — rever</button>
+              <button class="btn btn-ghost btn-sm mt2" style="color:var(--success);" onclick="openModule('m1')">✓ Concluído — rever</button>
             </div>
           </div>
 
@@ -1038,9 +1083,9 @@
               <div class="flex items-c gap2 mb1">
                 <span class="text-sm font-med">Direção Defensiva Avançada</span>
               </div>
-              <div class="flex items-c gap2 mb2"><span class="text-xs text-g400">⏱ 120 min</span><span class="tool-badge tool-pdf">📄 PDF</span><span class="badge badge-blue">+200 XP</span></div>
+              <div class="flex items-c gap2 mb2"><span class="text-xs text-g400">⏱ 120 min</span><span class="tool-badge tool-video">🎬 Vídeo</span><span class="badge badge-blue">+200 XP</span></div>
               <div class="progress-track progress-h15 track-blue mb2"><div class="progress-fill fill-blue" style="width:75%;"></div></div>
-              <button class="btn btn-brand btn-sm">▶ Continuar</button>
+              <button class="btn btn-brand btn-sm" onclick="openModule('m2')">▶ Continuar</button>
             </div>
           </div>
 
@@ -1052,7 +1097,7 @@
             </div>
             <div class="card" style="flex:1;padding:12px;opacity:.6;">
               <p class="text-sm font-med mb1">Manutenção Preventiva</p>
-              <div class="flex items-c gap2 mb1"><span class="text-xs text-g400">⏱ 180 min</span><span class="tool-badge tool-video">🎬 Vídeo</span><span class="badge badge-gray">+300 XP</span></div>
+              <div class="flex items-c gap2 mb1"><span class="text-xs text-g400">⏱ 180 min</span><span class="tool-badge tool-pdf">📄 PDF</span><span class="badge badge-gray">+300 XP</span></div>
               <p class="text-xs text-g400" style="font-style:italic;">🔒 Disponível após concluir o módulo anterior</p>
             </div>
           </div>
@@ -1066,6 +1111,7 @@
               <p class="text-sm font-med mb1">Gestão de Rotas Eficientes</p>
               <div class="flex items-c gap2 mb1"><span class="text-xs text-g400">⏱ 45 min</span><span class="tool-badge tool-audio">🎧 Áudio</span><span class="badge badge-gray">+100 XP</span></div>
               <p class="text-xs text-g400" style="font-style:italic;">🔒 Disponível após concluir o módulo anterior</p>
+              <button class="btn btn-outline btn-sm mt2" onclick="openModule('m4')" style="font-size:10px;">👁 Visualizar (bloqueado)</button>
             </div>
           </div>
         </div>
@@ -1402,7 +1448,160 @@
   </div><!-- /main -->
 </div><!-- /main-app -->
 
+<!-- ═══════════════════════════════════════════════════════
+     MODAL VIEWER DE MÓDULO
+════════════════════════════════════════════════════════ -->
+<div id="module-modal" class="modal-overlay" onclick="if(event.target===this)closeModule()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div style="flex:1;min-width:0;">
+        <div class="flex items-c gap2 mb1">
+          <span id="mod-trail-name" class="text-xs text-g400"></span>
+        </div>
+        <h2 id="mod-title" class="text-lg font-bold text-g800" style="line-height:1.25;"></h2>
+        <div class="flex items-c gap3 mt2 flex-wrap" id="mod-meta"></div>
+      </div>
+      <button onclick="closeModule()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--g400);padding:4px;line-height:1;flex-shrink:0;">✕</button>
+    </div>
+    <div class="modal-body" style="display:grid;grid-template-columns:1fr;gap:16px;">
+      <!-- Grid: player + sidebar em telas grandes -->
+      <div style="display:grid;grid-template-columns:1fr;gap:16px;" id="mod-grid">
+        <!-- Player -->
+        <div>
+          <div id="mod-player"></div>
+          <p id="mod-desc" class="text-sm text-g600 mt3" style="line-height:1.6;"></p>
+        </div>
+        <!-- Sidebar módulos -->
+        <div>
+          <p class="text-sm font-semi text-g800 mb2">Módulos da trilha</p>
+          <div id="mod-sidebar" class="module-sidebar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+  // ── Dados dos módulos ───────────────────────────────────────────────────────
+  const MODULES = {
+    m1: {
+      id:'m1', title:'Fundamentos da Plataforma', trail:'Motorista Pro', duration:45, xp:80,
+      status:'completed', contentType:'video', url:'https://www.youtube.com/embed/jNQXAC9IVRw',
+      desc:'Conheça os recursos essenciais da plataforma Fretebras e como utilizá-los no dia a dia.',
+      progress:100,
+    },
+    m2: {
+      id:'m2', title:'Direção Defensiva Avançada', trail:'Motorista Pro', duration:120, xp:200,
+      status:'active', contentType:'video', url:'https://www.youtube.com/embed/dQw4w9WgXcQ',
+      desc:'Técnicas avançadas de direção defensiva para aumentar a segurança nas estradas.',
+      progress:75,
+    },
+    m3: {
+      id:'m3', title:'Manutenção Preventiva', trail:'Motorista Pro', duration:180, xp:300,
+      status:'locked', contentType:'pdf', url:'https://www.africau.edu/images/default/sample.pdf',
+      desc:'Manual completo de manutenção preventiva de veículos pesados.',
+    },
+    m4: {
+      id:'m4', title:'Gestão de Rotas Eficientes', trail:'Motorista Pro', duration:45, xp:100,
+      status:'locked', contentType:'audio', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+      desc:'Podcast sobre como planejar e otimizar rotas para máxima eficiência.',
+    },
+  }
+
+  const TRAIL_MODULES = ['m1','m2','m3','m4']
+
+  const CONTENT_LABELS = {
+    video: '🎬 Vídeo', audio: '🎧 Áudio', pdf: '📄 PDF', doc: '📝 Documento'
+  }
+  const CONTENT_COLORS = {
+    video: 'tool-video', audio: 'tool-audio', pdf: 'tool-pdf', doc: 'tool-doc'
+  }
+
+  function openModule(id) {
+    const m = MODULES[id]
+    if (!m) return
+
+    document.getElementById('mod-trail-name').textContent = m.trail
+    document.getElementById('mod-title').textContent = m.title
+    document.getElementById('mod-desc').textContent = m.desc
+
+    // Meta badges
+    const meta = document.getElementById('mod-meta')
+    meta.innerHTML = `
+      <span class="tool-badge ${CONTENT_COLORS[m.contentType]}">${CONTENT_LABELS[m.contentType]}</span>
+      <span class="text-xs text-g400">⏱ ${m.duration} min</span>
+      <span class="text-xs" style="color:var(--brand);font-weight:500;">⚡ +${m.xp} XP</span>
+      ${m.status==='completed' ? '<span class="badge badge-success">Concluído</span>' : ''}
+    `
+
+    // Player
+    const player = document.getElementById('mod-player')
+    if (m.status === 'locked') {
+      player.innerHTML = `
+        <div style="background:var(--g50);border:1px solid var(--g100);border-radius:12px;padding:60px 20px;text-align:center;">
+          <div style="font-size:40px;margin-bottom:12px;">🔒</div>
+          <p class="text-sm font-med text-g600">Módulo bloqueado</p>
+          <p class="text-xs text-g400 mt1">Conclua o módulo anterior para desbloquear.</p>
+        </div>`
+    } else if (m.contentType === 'video') {
+      player.innerHTML = `
+        <div class="media-wrap">
+          <iframe src="${m.url}?rel=0&modestbranding=1" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>`
+    } else if (m.contentType === 'audio') {
+      player.innerHTML = `
+        <div class="audio-wrap">
+          <div class="audio-icon">🎧</div>
+          <p class="text-sm font-semi text-g800">${m.title}</p>
+          <p class="text-xs text-g400">Áudio / Podcast</p>
+          <audio controls src="${m.url}" style="width:100%;max-width:380px;margin-top:8px;"></audio>
+        </div>`
+    } else if (m.contentType === 'pdf') {
+      const embedUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(m.url)}&embedded=true`
+      player.innerHTML = `
+        <div class="pdf-wrap">
+          <div class="pdf-toolbar">
+            <svg width="14" height="14" fill="none" stroke="var(--danger)" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span class="text-xs text-g600 flex-1">${m.title}</span>
+            <a href="${m.url}" target="_blank" class="text-xs" style="color:var(--brand);">↗ Abrir original</a>
+          </div>
+          <iframe src="${embedUrl}"></iframe>
+        </div>`
+    }
+
+    // Sidebar de módulos
+    const sb = document.getElementById('mod-sidebar')
+    sb.innerHTML = TRAIL_MODULES.map(mid => {
+      const mod = MODULES[mid]
+      const isThis = mid === id
+      const circleClass = mod.status==='completed' ? 'mc2-done' : mod.status==='active' ? 'mc2-active' : 'mc2-locked'
+      const circleIcon  = mod.status==='completed' ? '✓' : mod.status==='locked' ? '🔒' : '▶'
+      const rowClass = isThis ? 'mod-row active' : mod.status==='locked' ? 'mod-row locked' : 'mod-row'
+      const onclick = mod.status !== 'locked' ? `onclick="openModule('${mid}')"` : ''
+      return `
+        <button class="${rowClass}" ${onclick}>
+          <div class="mod-circle ${circleClass}">${circleIcon}</div>
+          <div style="flex:1;min-width:0;text-align:left;">
+            <p class="text-xs font-med truncate" style="color:${isThis?'var(--brand-d)':'var(--g800)'}">${mod.title}</p>
+            <span class="tool-badge ${CONTENT_COLORS[mod.contentType]}" style="font-size:9px;padding:1px 5px;">${CONTENT_LABELS[mod.contentType]}</span>
+            <span class="text-xs text-g400" style="margin-left:4px;">${mod.duration}min</span>
+          </div>
+          ${mod.status==='active' && mod.progress ? `<span class="text-xs font-med" style="color:var(--brand);flex-shrink:0;">${mod.progress}%</span>` : ''}
+        </button>`
+    }).join('')
+
+    document.getElementById('module-modal').classList.add('open')
+    document.body.style.overflow = 'hidden'
+  }
+
+  function closeModule() {
+    document.getElementById('module-modal').classList.remove('open')
+    document.body.style.overflow = ''
+    // Para o vídeo/áudio ao fechar
+    const player = document.getElementById('mod-player')
+    player.innerHTML = ''
+  }
+
   function doLogin() {
     const email = document.getElementById('login-email').value;
     const errBox = document.getElementById('login-error');
