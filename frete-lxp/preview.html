@@ -2346,11 +2346,14 @@
     renderTags()
     clearBanner()
     cancelModuleForm()
-    courseModules = data ? (data.modules ? JSON.parse(JSON.stringify(data.modules)) : []) : []
+    courseModules = data && data.modules ? data.modules.map(m => Object.assign({}, m)) : []
     renderModules()
     document.getElementById('course-form-title').textContent = data ? 'Editar curso' : 'Novo curso'
     showPage('admin-course-new', null)
   }
+
+  // store for dynamically created courses (avoids inline JSON in onclick)
+  const savedCourses = []
 
   function saveCourse(status) {
     const title = document.getElementById('c-title').value.trim()
@@ -2364,7 +2367,8 @@
     const tagsHtml = courseTags.slice(0,3).map(t=>`<span class="tag-chip">${t}</span>`).join('')
     const modCount = courseModules.length
     const modHtml  = modCount > 0 ? `<span style="font-size:10px;color:var(--g400);">📚 ${modCount} módulo${modCount!==1?'s':''}</span>` : ''
-    const courseData = { title, desc, xp, tags: [...courseTags], modules: JSON.parse(JSON.stringify(courseModules)) }
+    const idx = savedCourses.length
+    savedCourses.push({ title, desc, xp, tags: [...courseTags], modules: courseModules.map(m => Object.assign({}, m)) })
     const li = document.createElement('div')
     li.className = 'card flex items-c gap4'
     li.innerHTML = `
@@ -2373,7 +2377,7 @@
         <div class="flex items-c gap2 mb1 flex-wrap"><span class="text-sm font-med text-g800">${title}</span>${pill}</div>
         <div class="flex items-c gap3 flex-wrap text-xs" style="color:#98A2B3;"><span style="color:#00AEEF;font-weight:500;">⚡ ${xp} XP</span>${tagsHtml}${modHtml}</div>
       </div>
-      <button class="btn btn-outline btn-sm" onclick='showCourseForm(${JSON.stringify(courseData).replace(/'/g,"&#39;")})'>✏️ Editar</button>`
+      <button class="btn btn-outline btn-sm" onclick="showCourseForm(savedCourses[${idx}])">✏️ Editar</button>`
     document.getElementById('courses-admin-list').prepend(li)
     showPage('admin-courses', null)
   }
